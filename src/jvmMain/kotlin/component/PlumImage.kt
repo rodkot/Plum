@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage
 
 class PlumImage(startWidth: Int, startHeight: Int) :
     BufferedImage(startWidth, startHeight, TYPE_INT_RGB) {
+
     init {
         clear()
     }
