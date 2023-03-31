@@ -1,14 +1,21 @@
 package ru.nsu.ccfit.plum.button
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import ru.nsu.ccfit.plum.component.Renderable
 import ru.nsu.ccfit.plum.filter.Tool
@@ -25,7 +32,7 @@ abstract class ToolButton(
     private val tool: Tool,
     private val checked: Boolean,
     private val icon: Icon
-) : Renderable,Clickable {
+) : Renderable, Clickable {
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
@@ -49,8 +56,13 @@ abstract class ToolButton(
                 alignment = Alignment.BottomEnd
             )
         ) {
-            IconToggleButton(checked = checked, onCheckedChange = { leftClick() } ){
-                 icon.get(checked)
+            Box(
+                modifier = Modifier
+                      .run { if (checked) this.background(Color(50,18,122), CircleShape) else this }
+            ) {
+                IconToggleButton(checked = checked, onCheckedChange = { leftClick() }) {
+                    icon.render()
+                }
             }
         }
     }

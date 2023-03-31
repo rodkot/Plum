@@ -1,18 +1,9 @@
 package ru.nsu.ccfit.plum.icon
 
 import androidx.compose.runtime.Composable
+import ru.nsu.ccfit.plum.component.Renderable
 
 /**
  * Класс отображения иконки
  */
-abstract class Icon(){
-
-    /**
-     * Функция возращающая отображение иконки в зависимости от состояния иконки
-     * @param checked состояние иконки:
-     * - true выбрана
-     * - false отжата
-     */
-    @Composable
-    abstract fun get(checked: Boolean)
-}
+abstract class Icon():Renderable

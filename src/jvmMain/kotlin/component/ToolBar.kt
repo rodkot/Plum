@@ -20,9 +20,9 @@ class ToolBar(
     @Composable
     override fun render() {
         TopAppBar(title = {
-            Row {
-                Text(currentTool.value.name)
-            }
+//            Row {
+//                Text(currentTool.value.name)
+//            }
         }, modifier = Modifier.fillMaxWidth(),
             actions = {
                 Row {

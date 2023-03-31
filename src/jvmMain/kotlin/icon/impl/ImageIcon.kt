@@ -12,7 +12,7 @@ import ru.nsu.ccfit.plum.icon.Icon
  */
 class ImageIcon(private val path: String) : Icon() {
     @Composable
-    override fun get(checked: Boolean) {
+    override fun render() {
         Image(
             painter = painterResource(path),
             contentDescription = path,

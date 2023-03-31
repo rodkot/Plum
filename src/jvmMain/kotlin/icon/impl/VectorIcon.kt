@@ -13,8 +13,7 @@ import ru.nsu.ccfit.plum.icon.Icon
 class VectorIcon(private val image: ImageVector) : Icon() {
 
     @Composable
-    override fun get(checked: Boolean) {
-        Icon(image, contentDescription = image.name,
-            tint = if (checked) Color(0xFFEC407A) else Color(0xFFB0BEC5))
+    override fun render() {
+        Icon(image, contentDescription = image.name)
     }
 }
