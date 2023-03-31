@@ -10,6 +10,7 @@ import androidx.compose.ui.window.MenuBar
 import androidx.compose.ui.window.MenuScope
 import ru.nsu.ccfit.plum.filter.Filter
 import ru.nsu.ccfit.plum.filter.GrayScaleFilter
+import ru.nsu.ccfit.plum.filter.RotateFilter
 import ru.nsu.ccfit.plum.filter.SmoothingFilter
 
 class Menu() {
@@ -35,6 +36,7 @@ class Menu() {
                 // Здесь необходимо добавить схожую конструкцию
                 createFilterMenuItem(GrayScaleFilter)
                 createFilterMenuItem(SmoothingFilter)
+                createFilterMenuItem(RotateFilter)
             }
             Menu("Справка", mnemonic = 'I') {
                 Item("Инструкция", onClick = { Controller.instruction.value = true })
