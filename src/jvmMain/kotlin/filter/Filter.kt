@@ -10,6 +10,6 @@ abstract class Filter(name: String) : Tool(name) {
     /**
      *
      */
-    abstract fun draw(image: PlumImage, pressOffset: Offset, releaseOffset: Offset, size: IntSize)
+    abstract fun draw(image: PlumImage, pressOffset: Offset, releaseOffset: Offset, size: IntSize): PlumImage
 
 }

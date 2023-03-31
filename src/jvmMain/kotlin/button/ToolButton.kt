@@ -50,7 +50,7 @@ abstract class ToolButton(
                     )
                 }
             },
-            modifier = Modifier.padding(start = 40.dp).mouseClickable { rightClick() },
+            modifier = Modifier.padding(start = 40.dp),
             delayMillis = 600,
             tooltipPlacement = TooltipPlacement.CursorPoint(
                 alignment = Alignment.BottomEnd
@@ -58,9 +58,9 @@ abstract class ToolButton(
         ) {
             Box(
                 modifier = Modifier
-                      .run { if (checked) this.background(Color(50,18,122), CircleShape) else this }
+                      .run { if (checked) this.background(Color(153,124,246), CircleShape) else this }
             ) {
-                IconToggleButton(checked = checked, onCheckedChange = { leftClick() }) {
+                IconToggleButton(modifier = Modifier.clickable { println("rightClick");rightClick() }, checked = checked, onCheckedChange = { leftClick() }) {
                     icon.render()
                 }
             }

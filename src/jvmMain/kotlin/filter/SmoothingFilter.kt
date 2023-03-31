@@ -38,10 +38,12 @@ object SmoothingFilter : Filter("Cглаживающий фильтр") {
         return matrix
     }
 
-    override fun draw(image: PlumImage, pressOffset: Offset, releaseOffset: Offset, size: IntSize) {
+    override fun draw(image: PlumImage, pressOffset: Offset, releaseOffset: Offset, size: IntSize): PlumImage {
+        val newImage = image.copy()
         val matrixFilter = getGaussMatrix(n, sigma)
-        val imageBoarder = image.addBoarderImage(n)
+        val imageBoarder = newImage.addBoarderImage(n)
 
-        image.getImageFilter { x, y -> imageBoarder.getValueFilter(matrixFilter, x, y) }
+        newImage.getImageFilter { x, y -> imageBoarder.getValueFilter(matrixFilter, x, y) }
+        return newImage
     }
 }

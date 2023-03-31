@@ -76,7 +76,7 @@ fun MainWindow() {
 
                 MainWindowController.canvas.render(remImage.value) { image: PlumImage, press: Offset, release: Offset ->
                     run {
-                        s.draw(
+                        remImage.value = s.draw(
                             image,
                             press,
                             release,
