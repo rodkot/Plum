@@ -12,5 +12,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = "plum"
+rootProject.name = "Plum"
 
