@@ -24,10 +24,11 @@ import ru.nsu.ccfit.plum.filter.SmoothingFilter
 import java.io.File
 import java.io.IOException
 import javax.imageio.ImageIO
+import javax.swing.UIManager
 
 class MainWindowController {
     companion object {
-        val currentFilter = mutableStateOf<Filter>(SmoothingFilter())
+        val currentFilter = mutableStateOf<Filter>(SmoothingFilter)
 
         var size = mutableStateOf(IntSize.Zero)
         val image = mutableStateOf(PlumImage(700, 400))
@@ -69,13 +70,13 @@ fun MainWindow() {
                         if (MainWindowController.size.value == IntSize.Zero)
                             MainWindowController.image.value = MainWindowController.image.value.resize(it)
                         MainWindowController.size.value = it
-                        println("{main win $it}")
                     }
             ) {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
                 MainWindowController.canvas.render(remImage.value) { image: PlumImage, press: Offset, release: Offset ->
                     run {
-                        remImage.value = s.draw(
+                        s.draw(
                             image,
                             press,
                             release,

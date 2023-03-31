@@ -5,10 +5,11 @@ import androidx.compose.ui.unit.IntSize
 import ru.nsu.ccfit.plum.component.PlumImage
 
 
-abstract class Filter(private val name: String) {
-    abstract fun draw(image: PlumImage, pressOffset: Offset, releaseOffset: Offset, size: IntSize): PlumImage
+abstract class Filter(name: String) : Tool(name) {
 
-    fun getNameTool(): String {
-        return name
-    }
+    /**
+     *
+     */
+    abstract fun draw(image: PlumImage, pressOffset: Offset, releaseOffset: Offset, size: IntSize)
+
 }

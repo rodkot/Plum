@@ -7,7 +7,9 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.MenuBar
+import androidx.compose.ui.window.MenuScope
 import ru.nsu.ccfit.plum.filter.Filter
+import ru.nsu.ccfit.plum.filter.GrayScaleFilter
 import ru.nsu.ccfit.plum.filter.SmoothingFilter
 
 class Menu() {
@@ -28,8 +30,11 @@ class Menu() {
                     shortcut = KeyShortcut(Key.P, ctrl = true)
                 )
             }
-            Menu("Инструменты", mnemonic = 'I') {
-
+            Menu("Фильтры", mnemonic = 'I') {
+                // TODO По добавлению фильтра
+                // Здесь необходимо добавить схожую конструкцию
+                createFilterMenuItem(GrayScaleFilter)
+                createFilterMenuItem(SmoothingFilter)
             }
             Menu("Справка", mnemonic = 'I') {
                 Item("Инструкция", onClick = { Controller.instruction.value = true })
@@ -38,10 +43,24 @@ class Menu() {
         }
     }
 
+    /**
+     * Функция создания для фильра нового объекта меню
+     * @param filter добавлямый фильтр
+     */
+    @Composable
+    fun MenuScope.createFilterMenuItem(filter: Filter) =
+        CheckboxItem(
+            filter.name,
+            checked = Controller.filter.value == filter,
+            onCheckedChange = {
+                Controller.filter.value = filter
+            }
+        )
+
     object Controller {
         var save = mutableStateOf(false)
         var open = mutableStateOf(false)
-        var filter = mutableStateOf<Filter>(SmoothingFilter())
+        var filter = mutableStateOf<Filter>(SmoothingFilter)
         var instruction = mutableStateOf(false)
         var about = mutableStateOf(false)
     }

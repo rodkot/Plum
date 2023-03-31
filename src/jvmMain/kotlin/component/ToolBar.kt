@@ -6,7 +6,11 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import ru.nsu.ccfit.plum.button.impl.GrayScaleButton
+import ru.nsu.ccfit.plum.button.impl.SmoothingButton
 import ru.nsu.ccfit.plum.filter.Filter
+import ru.nsu.ccfit.plum.filter.GrayScaleFilter
+import ru.nsu.ccfit.plum.filter.SmoothingFilter
 
 
 class ToolBar(
@@ -17,12 +21,15 @@ class ToolBar(
     override fun render() {
         TopAppBar(title = {
             Row {
-                Text(currentTool.value.getNameTool())
+                Text(currentTool.value.name)
             }
         }, modifier = Modifier.fillMaxWidth(),
             actions = {
                 Row {
-
+                    // TODO По добавлению фильтра
+                    // Добавить схожую конструкцию
+                    SmoothingButton(currentTool.value is SmoothingFilter) { currentTool.value = SmoothingFilter }.render()
+                    GrayScaleButton(currentTool.value is GrayScaleFilter) { currentTool.value = GrayScaleFilter }.render()
                 }
             })
     }
