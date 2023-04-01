@@ -4,37 +4,26 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize
 import ru.nsu.ccfit.plum.component.PlumImage
 import java.awt.Point
-import java.util.concurrent.TimeUnit
 
 
 object RotateFilter : Filter("Фильтр поворота") {
-    var minX = 0
-    var maxX = 0
-    var minY = 0
-    var maxY = 0
-
-    /** Матрица поворота
-     * /cos A -sin A \
-     * \sin A  cos A /
+    /**
+     * @param angle угол поворота
      */
-    override fun draw(image: PlumImage, pressOffset: Offset, releaseOffset: Offset, size: IntSize) = rotateImage(image)
+    var angle: Int = 45
 
-    private fun rotateImage(original: PlumImage, angle: Int = 45): PlumImage {
-        val radians = Math.toRadians(angle.toDouble())
-        val cos = Math.cos(radians)
-        val sin = Math.sin(radians)
-        val pixelMap = getPixelMap(original, original.height, original.width, cos, sin)
-        val newImage = PlumImage(maxX - minX + 1, maxY - minY + 1)
+    private var minX = 0
+    private var maxX = 0
+    private var minY = 0
+    private var maxY = 0
 
-        for (it in pixelMap) {
-            newImage.setRGB(it.first.x - minX, it.first.y - minY, it.second)
-        }
-
-        return newImage
-    }
-
-    private fun getPixelMap(original: PlumImage, height: Int, width: Int, cos: Double, sin: Double) =
-        Array(height * width) { i ->
+    private fun getRotatedPixelMap(
+        original: PlumImage,
+        height: Int,
+        width: Int,
+        cos: Double,
+        sin: Double
+    ) = Array(height * width) { i ->
             val x = i % width
             val y = i / width
 
@@ -64,4 +53,25 @@ object RotateFilter : Filter("Фильтр поворота") {
                 original.getRGB(x, y)
             )
         }
+
+    private fun rotateImage(original: PlumImage): PlumImage {
+        val radians = Math.toRadians(angle.toDouble())
+        val cos = Math.cos(radians)
+        val sin = Math.sin(radians)
+        val pixelMap = getRotatedPixelMap(original, original.height, original.width, cos, sin)
+        val newImage = PlumImage(maxX - minX + 1, maxY - minY + 1)
+
+        for (pixel in pixelMap) {
+            newImage.setRGB(pixel.first.x - minX, pixel.first.y - minY, pixel.second)
+        }
+
+        return newImage
+    }
+
+    /**
+     * Матрица поворота
+     * /cos A -sin A \
+     * \sin A  cos A /
+     */
+    override fun draw(image: PlumImage, pressOffset: Offset, releaseOffset: Offset, size: IntSize) = rotateImage(image)
 }
