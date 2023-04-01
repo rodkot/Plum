@@ -10,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import ru.nsu.ccfit.plum.component.*
@@ -18,7 +17,6 @@ import ru.nsu.ccfit.plum.dialog.AboutDialog
 import ru.nsu.ccfit.plum.dialog.FileOpenDialog
 import ru.nsu.ccfit.plum.dialog.FileSaveDialog
 import ru.nsu.ccfit.plum.dialog.ManualDialog
-import ru.nsu.ccfit.plum.draw.resize
 import ru.nsu.ccfit.plum.filter.Filter
 import ru.nsu.ccfit.plum.filter.SmoothingFilter
 import java.io.File
@@ -31,7 +29,7 @@ class MainWindowController {
         val currentFilter = mutableStateOf<Filter>(SmoothingFilter)
 
         var size = mutableStateOf(IntSize.Zero)
-        val image = mutableStateOf(PlumImage(700, 400))
+        var image = ImageIO.read(Thread.currentThread().contextClassLoader.getResource("test-image.png")).toPlumImage()
 
         val toolBar = ToolBar(currentFilter)
         val canvas = PaintCanvas()
@@ -43,7 +41,7 @@ class MainWindowController {
 @Preview
 fun MainWindow() {
 
-    val s = MainWindowController.currentFilter.value
+
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -51,7 +49,8 @@ fun MainWindow() {
         val saveAction = remember { Menu.Controller.save }
         val openAction = remember { Menu.Controller.open }
         val dialogManual = remember { Menu.Controller.instruction }
-        val remImage = remember { MainWindowController.image }
+        val filter = MainWindowController.currentFilter.value
+
         Menu.Controller.filter = MainWindowController.currentFilter
 
         Box(Modifier.fillMaxWidth()) {
@@ -66,24 +65,18 @@ fun MainWindow() {
                 modifier = Modifier
                     .fillMaxSize().padding(13.dp)
                     .verticalScroll(stateVertical)
-                    .horizontalScroll(stateHorizontal).onSizeChanged {
-                        if (MainWindowController.size.value == IntSize.Zero)
-                            MainWindowController.image.value = MainWindowController.image.value.resize(it)
-                        MainWindowController.size.value = it
-                    }
+                    .horizontalScroll(stateHorizontal)
             ) {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
-                MainWindowController.canvas.render(remImage.value) { image: PlumImage, press: Offset, release: Offset ->
-                    run {
-                        remImage.value = s.draw(
-                            image,
-                            press,
-                            release,
+                MainWindowController.image = filter.draw(
+                    MainWindowController.image,
+                            Offset(0f,0f),
+                    Offset(0f,0f),
                             MainWindowController.size.value
                         )
-                    }
-                }
+
+                MainWindowController.canvas.render(MainWindowController.image)
 
                 if (openAction.value) {
                     MainWindowController.canvas.stop()
@@ -92,7 +85,7 @@ fun MainWindow() {
                             try {
                                 val file = File(it)
                                 val image = ImageIO.read(file)
-                                remImage.value = image.toPlumImage()
+                                MainWindowController.image = image.toPlumImage()
                                 openAction.value = false
                                 MainWindowController.canvas.start()
                             } catch (e: Exception) {
@@ -110,7 +103,7 @@ fun MainWindow() {
                             output.createNewFile()
 
                             try {
-                                ImageIO.write(MainWindowController.image.value, "PNG", output)
+                                ImageIO.write(MainWindowController.image, "PNG", output)
                             } catch (e: IOException) {
                                 println(e.message)
                             }
