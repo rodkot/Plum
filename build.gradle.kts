@@ -31,6 +31,7 @@ kotlin {
                 implementation("com.raedapps:rasmview:1.2.1")
                 implementation("com.godaddy.android.colorpicker:compose-color-picker-jvm:0.7.0")
                 implementation("com.github.SmartToolFactory:Compose-Colorful-Sliders:1.1.0")
+                implementation("com.mxalbert.zoomable:zoomable:1.5.1")
             }
         }
         val jvmTest by getting

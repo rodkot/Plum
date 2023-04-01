@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
@@ -18,16 +16,9 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import ru.nsu.ccfit.plum.component.*
-import ru.nsu.ccfit.plum.dialog.AboutDialog
-import ru.nsu.ccfit.plum.dialog.FileOpenDialog
-import ru.nsu.ccfit.plum.dialog.FileSaveDialog
-import ru.nsu.ccfit.plum.dialog.ManualDialog
 import ru.nsu.ccfit.plum.filter.Filter
 import ru.nsu.ccfit.plum.filter.SmoothingFilter
-import java.io.File
-import java.io.IOException
 import javax.imageio.ImageIO
-import javax.swing.UIManager
 
 class MainWindowController {
     companion object {
@@ -42,6 +33,7 @@ class MainWindowController {
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Preview
 fun MainWindow() {
@@ -62,10 +54,14 @@ fun MainWindow() {
             MainWindowController.toolBar.render()
         }
 
+
         var offset = remember { mutableStateOf(IntOffset.Zero) }
-     //   val imagePainter = remember { BitmapPainter(yourBitmapImage) }
+        val maxOffset = remember { mutableStateOf(IntOffset.Zero) }
         val stateVertical = rememberScrollState(0)
         val stateHorizontal = rememberScrollState(0)
+
+        val imageWidth = MainWindowController.image.width.dp
+        val imageHeight = MainWindowController.image.height.dp
 
         Box(
             modifier = Modifier
@@ -74,7 +70,19 @@ fun MainWindow() {
                 .padding(13.dp)
                 .pointerInput(Unit) {
                     detectDragGestures { change, dragAmount ->
-                        offset.value += IntOffset(dragAmount.x.toInt(),dragAmount.y.toInt())
+                        offset.value += IntOffset(dragAmount.x.toInt(), dragAmount.y.toInt())
+
+                        // Calculate the maximum offset that restricts dragging the image beyond the right and bottom edge
+                        val maxWidth = (imageWidth - size.width.dp).coerceAtLeast(0.dp).toPx()
+                        val maxHeight = (imageHeight - size.height.toDp()).coerceAtLeast(0.dp).toPx()
+                        maxOffset.value = IntOffset(maxWidth.toInt(), maxHeight.toInt())
+
+                        // Apply the offset constraints
+                        offset.value = IntOffset(
+                            x = offset.value.x.coerceIn(0, maxOffset.value.x),
+                            y = offset.value.y.coerceIn(0, maxOffset.value.y)
+                        )
+
                         change.consumeAllChanges()
                     }
                 }
@@ -87,5 +95,9 @@ fun MainWindow() {
                 modifier = Modifier.offset { offset.value }
             )
         }
+
+
+
+
     }
 }
