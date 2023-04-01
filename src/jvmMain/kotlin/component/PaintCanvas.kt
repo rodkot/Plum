@@ -4,9 +4,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 
 
@@ -22,13 +25,14 @@ class PaintCanvas() {
     }
 
     @Composable
-    fun render(image: PlumImage) {
+    fun render(image: PlumImage, offset: MutableState<IntOffset>) {
 
         Box(Modifier.border(3.dp, Color.Black)) {
             Box(Modifier.fillMaxSize()) {
                 Image(
                     image.toComposeImageBitmap(), contentDescription = "Изображение",
                     modifier = Modifier.fillMaxSize()
+
                 )
             }
         }

@@ -2,6 +2,7 @@ package ru.nsu.ccfit.plum
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +11,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.input.pointer.consumeAllChanges
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import ru.nsu.ccfit.plum.component.*
@@ -57,81 +62,29 @@ fun MainWindow() {
             MainWindowController.toolBar.render()
         }
 
-        Box(Modifier.fillMaxSize().background(Color.Gray)) {
-            val stateVertical = rememberScrollState(0)
-            val stateHorizontal = rememberScrollState(0)
+        var offset = remember { mutableStateOf(IntOffset.Zero) }
+     //   val imagePainter = remember { BitmapPainter(yourBitmapImage) }
+        val stateVertical = rememberScrollState(0)
+        val stateHorizontal = rememberScrollState(0)
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize().padding(13.dp)
-                    .verticalScroll(stateVertical)
-                    .horizontalScroll(stateHorizontal)
-            ) {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-
-                MainWindowController.image = filter.draw(
-                    MainWindowController.image,
-                            Offset(0f,0f),
-                    Offset(0f,0f),
-                            MainWindowController.size.value
-                        )
-
-                MainWindowController.canvas.render(MainWindowController.image)
-
-                if (openAction.value) {
-                    MainWindowController.canvas.stop()
-                    FileOpenDialog {
-                        if (it != null) {
-                            try {
-                                val file = File(it)
-                                val image = ImageIO.read(file)
-                                MainWindowController.image = image.toPlumImage()
-                                openAction.value = false
-                                MainWindowController.canvas.start()
-                            } catch (e: Exception) {
-                                openAction.value = false
-                                MainWindowController.canvas.start()
-                            }
-                        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Gray)
+                .padding(13.dp)
+                .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
+                        offset.value += IntOffset(dragAmount.x.toInt(),dragAmount.y.toInt())
+                        change.consumeAllChanges()
                     }
                 }
-
-                if (saveAction.value) {
-                    FileSaveDialog {
-                        if (it != null) {
-                            val output = File(it.plus(".png"))
-                            output.createNewFile()
-
-                            try {
-                                ImageIO.write(MainWindowController.image, "PNG", output)
-                            } catch (e: IOException) {
-                                println(e.message)
-                            }
-                        }
-                        saveAction.value = false
-                    }
-                }
-
-                if (dialogAbout.value) {
-                    AboutDialog { dialogAbout.value = false }
-                }
-
-                if (dialogManual.value) {
-                    ManualDialog { dialogManual.value = false }
-                }
-            }
-
-            VerticalScrollbar(
-                modifier = Modifier.align(Alignment.CenterEnd)
-                    .fillMaxHeight(),
-                adapter = rememberScrollbarAdapter(stateVertical),
-                style = ru.nsu.ccfit.plum.component.defaultScrollbarStyle()
-            )
-            HorizontalScrollbar(
-                modifier = Modifier.align(Alignment.BottomStart)
-                    .fillMaxWidth(),
-                style = ru.nsu.ccfit.plum.component.defaultScrollbarStyle(),
-                adapter = rememberScrollbarAdapter(stateHorizontal)
+                .verticalScroll(stateVertical)
+                .horizontalScroll(stateHorizontal)
+        ) {
+            Image(
+                painter = painterResource("test-image.png"),
+                contentDescription = "Your Image",
+                modifier = Modifier.offset { offset.value }
             )
         }
     }
