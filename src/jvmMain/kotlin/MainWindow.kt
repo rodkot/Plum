@@ -23,124 +23,152 @@ import java.io.IOException
 import javax.imageio.ImageIO
 import javax.swing.UIManager
 
-class MainWindowController {
-    companion object {
-        val currentFilter = mutableStateOf<Filter>(SmoothingFilter)
-        val originalMode = mutableStateOf(false)
+class MainWindow : Renderable {
 
-        var size = mutableStateOf(IntSize.Zero)
-        var originalImage =
-            ImageIO.read(Thread.currentThread().contextClassLoader.getResource("test-image.png")).toPlumImage()
-        var currentImage = originalImage
+    private val currentFilter = mutableStateOf<Filter>(SmoothingFilter)
+    private val originalMode = mutableStateOf(false)
 
-        val toolBar = ToolBar(currentFilter)
-        val canvas = PaintCanvas()
-    }
-}
+    private var size = mutableStateOf(IntSize.Zero)
+    private var originalImage =
+        ImageIO.read(Thread.currentThread().contextClassLoader.getResource("test-image.png")).toPlumImage()
+    private var currentImage = originalImage
+
+    private val toolBar = ToolBar(currentFilter)
+    private val canvas = PaintCanvas()
 
 
-@Composable
-fun MainWindow() {
+    @Composable
+    override fun render() {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            val filter = currentFilter.value
 
+            Menu.Controller.filter = currentFilter
 
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        val dialogAbout = remember { Menu.Controller.about }
-        val saveAction = remember { Menu.Controller.save }
-        val openAction = remember { Menu.Controller.open }
-        val dialogManual = remember { Menu.Controller.instruction }
-        val filter = MainWindowController.currentFilter.value
-
-        Menu.Controller.filter = MainWindowController.currentFilter
-
-        Box(Modifier.fillMaxWidth()) {
-            MainWindowController.toolBar.render()
-        }
-
-        Box(Modifier.fillMaxSize().background(Color.Gray)) {
-            val stateVertical = rememberScrollState(0)
-            val stateHorizontal = rememberScrollState(0)
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize().padding(13.dp)
-                    .verticalScroll(stateVertical)
-                    .horizontalScroll(stateHorizontal)
-            ) {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-
-                MainWindowController.currentImage = filter.draw(
-                    MainWindowController.originalImage,
-                    Offset(0f, 0f),
-                    Offset(0f, 0f),
-                    MainWindowController.size.value
-                )
-
-                //Определение какое изображение должно отображаться
-                val image =
-                    if (MainWindowController.originalMode.value) MainWindowController.originalImage else MainWindowController.currentImage
-
-
-                MainWindowController.canvas.render(image) {
-                    MainWindowController.originalMode.value = !MainWindowController.originalMode.value
-                }
-
-                if (openAction.value) {
-
-                    FileOpenDialog {
-                        if (it != null) {
-                            try {
-                                val file = File(it)
-                                val image = ImageIO.read(file)
-                                MainWindowController.originalImage = image.toPlumImage()
-                                openAction.value = false
-
-                            } catch (e: Exception) {
-                                openAction.value = false
-
-                            }
-                        }
-                    }
-                }
-
-                if (saveAction.value) {
-                    FileSaveDialog {
-                        if (it != null) {
-                            val output = File(it.plus(".png"))
-                            output.createNewFile()
-
-                            try {
-                                ImageIO.write(MainWindowController.originalImage, "PNG", output)
-                            } catch (e: IOException) {
-                                println(e.message)
-                            }
-                        }
-                        saveAction.value = false
-                    }
-                }
-
-                if (dialogAbout.value) {
-                    AboutDialog { dialogAbout.value = false }
-                }
-
-                if (dialogManual.value) {
-                    ManualDialog { dialogManual.value = false }
-                }
+            Box(Modifier.fillMaxWidth()) {
+                toolBar.render()
             }
 
-            VerticalScrollbar(
-                modifier = Modifier.align(Alignment.CenterEnd)
-                    .fillMaxHeight(),
-                adapter = rememberScrollbarAdapter(stateVertical),
-                style = ru.nsu.ccfit.plum.component.defaultScrollbarStyle()
-            )
-            HorizontalScrollbar(
-                modifier = Modifier.align(Alignment.BottomStart)
-                    .fillMaxWidth(),
-                style = ru.nsu.ccfit.plum.component.defaultScrollbarStyle(),
-                adapter = rememberScrollbarAdapter(stateHorizontal)
-            )
+            Box(Modifier.fillMaxSize().background(Color.Gray)) {
+                val stateVertical = rememberScrollState(0)
+                val stateHorizontal = rememberScrollState(0)
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize().padding(13.dp)
+                        .verticalScroll(stateVertical)
+                        .horizontalScroll(stateHorizontal)
+                ) {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
+
+
+                    //Приминение фильтра
+                    currentImage = filter.draw(
+                        originalImage,
+                        Offset(0f, 0f),
+                        Offset(0f, 0f),
+                        size.value
+                    )
+
+                    drawImage()
+
+                    openDialog()
+
+                    saveDialog()
+
+                    manualDialog()
+
+                    aboutDialog()
+                }
+
+                VerticalScrollbar(
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                        .fillMaxHeight(),
+                    adapter = rememberScrollbarAdapter(stateVertical),
+                    style = ru.nsu.ccfit.plum.component.defaultScrollbarStyle()
+                )
+                HorizontalScrollbar(
+                    modifier = Modifier.align(Alignment.BottomStart)
+                        .fillMaxWidth(),
+                    style = ru.nsu.ccfit.plum.component.defaultScrollbarStyle(),
+                    adapter = rememberScrollbarAdapter(stateHorizontal)
+                )
+            }
+        }
+    }
+
+    @Composable
+    fun openDialog() {
+        val openAction = remember { Menu.Controller.open }
+        if (openAction.value) {
+
+            FileOpenDialog {
+                if (it != null) {
+                    try {
+                        val file = File(it)
+                        val image = ImageIO.read(file)
+                        originalImage = image.toPlumImage()
+                        currentImage = originalImage
+                        originalMode.value = !originalMode.value
+                        openAction.value = false
+
+                    } catch (e: Exception) {
+                        openAction.value = false
+
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun manualDialog() {
+        val dialogManual = remember { Menu.Controller.instruction }
+        if (dialogManual.value) {
+            ManualDialog { dialogManual.value = false }
+        }
+    }
+
+    @Composable
+    fun aboutDialog() {
+        val dialogAbout = remember { Menu.Controller.about }
+        if (dialogAbout.value) {
+            AboutDialog { dialogAbout.value = false }
+        }
+    }
+
+    @Composable
+    fun saveDialog() {
+        val saveAction = remember { Menu.Controller.save }
+        if (saveAction.value) {
+            FileSaveDialog {
+                if (it != null) {
+                    val output = File(it.plus(".png"))
+                    output.createNewFile()
+
+                    try {
+                        ImageIO.write(currentImage, "PNG", output)
+                    } catch (e: IOException) {
+                        println(e.message)
+                    }
+                }
+                saveAction.value = false
+            }
+        }
+    }
+
+    @Composable
+    fun drawImage() {
+        //Определение какое изображение должно отображаться
+        val image =
+            if (originalMode.value) originalImage else currentImage
+
+
+        canvas.render(image) {
+            originalMode.value = !originalMode.value
         }
     }
 }
+
+

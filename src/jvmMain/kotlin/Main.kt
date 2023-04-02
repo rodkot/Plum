@@ -28,6 +28,6 @@ fun main() = application {
     ) {
         window.minimumSize = Dimension(SizeWindows.width(), SizeWindows.height())
         Menu().render(this)
-        MainWindow()
+        MainWindow().render()
     }
 }
