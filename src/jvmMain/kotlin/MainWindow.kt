@@ -1,6 +1,5 @@
 package ru.nsu.ccfit.plum
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -27,9 +26,12 @@ import javax.swing.UIManager
 class MainWindowController {
     companion object {
         val currentFilter = mutableStateOf<Filter>(SmoothingFilter)
+        val originalMode = mutableStateOf(false)
 
         var size = mutableStateOf(IntSize.Zero)
-        var image = ImageIO.read(Thread.currentThread().contextClassLoader.getResource("test-image.png")).toPlumImage()
+        var originalImage =
+            ImageIO.read(Thread.currentThread().contextClassLoader.getResource("test-image.png")).toPlumImage()
+        var currentImage = originalImage
 
         val toolBar = ToolBar(currentFilter)
         val canvas = PaintCanvas()
@@ -38,7 +40,6 @@ class MainWindowController {
 
 
 @Composable
-@Preview
 fun MainWindow() {
 
 
@@ -69,28 +70,35 @@ fun MainWindow() {
             ) {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
-                MainWindowController.image = filter.draw(
-                    MainWindowController.image,
-                            Offset(0f,0f),
-                    Offset(0f,0f),
-                            MainWindowController.size.value
-                        )
+                MainWindowController.currentImage = filter.draw(
+                    MainWindowController.originalImage,
+                    Offset(0f, 0f),
+                    Offset(0f, 0f),
+                    MainWindowController.size.value
+                )
 
-                MainWindowController.canvas.render(MainWindowController.image)
+                //Определение какое изображение должно отображаться
+                val image =
+                    if (MainWindowController.originalMode.value) MainWindowController.originalImage else MainWindowController.currentImage
+
+
+                MainWindowController.canvas.render(image) {
+                    MainWindowController.originalMode.value = !MainWindowController.originalMode.value
+                }
 
                 if (openAction.value) {
-                    MainWindowController.canvas.stop()
+
                     FileOpenDialog {
                         if (it != null) {
                             try {
                                 val file = File(it)
                                 val image = ImageIO.read(file)
-                                MainWindowController.image = image.toPlumImage()
+                                MainWindowController.originalImage = image.toPlumImage()
                                 openAction.value = false
-                                MainWindowController.canvas.start()
+
                             } catch (e: Exception) {
                                 openAction.value = false
-                                MainWindowController.canvas.start()
+
                             }
                         }
                     }
@@ -103,7 +111,7 @@ fun MainWindow() {
                             output.createNewFile()
 
                             try {
-                                ImageIO.write(MainWindowController.image, "PNG", output)
+                                ImageIO.write(MainWindowController.originalImage, "PNG", output)
                             } catch (e: IOException) {
                                 println(e.message)
                             }
