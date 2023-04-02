@@ -2,7 +2,8 @@ package ru.nsu.ccfit.plum.dialog
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import ru.nsu.ccfit.plum.component.countVerticesBox
+import ru.nsu.ccfit.plum.component.rangeBox
+import ru.nsu.ccfit.plum.component.selectItem
 import ru.nsu.ccfit.plum.filter.SmoothingFilter
 
 // TODO По добавлению фильтра
@@ -11,6 +12,7 @@ class SmoothingFilterDialog : FilterDialog(SmoothingFilter) {
     // TODO По добавлению фильтра
     // Изменяемые параметры
     private val sigma = mutableStateOf(SmoothingFilter.sigma)
+    private val size = mutableStateOf(SmoothingFilter.size)
 
     // TODO По добавлению фильтра
     // Здесь нужно приминить настройки выбранные пользователем
@@ -22,6 +24,9 @@ class SmoothingFilterDialog : FilterDialog(SmoothingFilter) {
     // В функцию нужно добавить необходимые инструменты для изменения параметров
     @Composable
     override fun settingBox() {
-        countVerticesBox(sigma, 3f..13f, 10)
+
+        rangeBox("Sigma", sigma, 0f..1f, 11)
+        selectItem("Size", size, SmoothingFilter.Size.values())
+
     }
 }

@@ -7,6 +7,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ru.nsu.ccfit.plum.filter.Filter
 
@@ -37,6 +38,7 @@ abstract class FilterDialog(
                 // cancelClick.invoke()
             },
             title = { Text(text = "Настройка фильтра ${filter.name}") },
+            modifier = Modifier.widthIn(Dp.Unspecified,500.dp),
             text = {
                 Column {
                     settingBox()

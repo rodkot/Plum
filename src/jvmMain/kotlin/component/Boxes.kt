@@ -1,97 +1,188 @@
 package ru.nsu.ccfit.plum.component
 
-import androidx.compose.foundation.ScrollbarStyle
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Slider
-import androidx.compose.material.Text
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.godaddy.android.colorpicker.ClassicColorPicker
 import com.godaddy.android.colorpicker.HsvColor
 
+/**
+ * Слайдер для выбора натурального значения
+ * @param name название параметра
+ * @param valueInt изменяемое значение
+ * @param range пределы выбора величины
+ */
 @Composable
-fun widthBox(widthBrunch: MutableState<Float>, range: ClosedFloatingPointRange<Float>, steps: Int) {
+fun rangeBox(name: String, valueInt: MutableState<Int>, range: IntRange) {
     Box(contentAlignment = Alignment.Center) {
+        var value by remember { mutableStateOf(valueInt.value) }
         Column {
-            Text(text = "Толщина: ${widthBrunch.value.toInt()}", color = Color.Black)
+            Text(text = "${name}: ${valueInt.value}", color = Color.Black)
+
             Spacer(Modifier.height(10.dp))
-            Slider(
-                value = widthBrunch.value,
-                modifier = Modifier.width(200.dp).height(10.dp),
-                valueRange = range,
-                steps = steps,
-                onValueChange = {
-                    widthBrunch.value = it
+            Row(Modifier.width(400.dp).height(50.dp)) {
+                Column(Modifier.weight(2f)) {
+                    Slider(
+                        value = value.toFloat(),
+                        valueRange = range.first.toFloat()..range.last.toFloat(),
+                        steps = range.last - range.first,
+                        modifier = Modifier.align(Alignment.Start),
+                        onValueChange = { newValue ->
+                            valueInt.value = newValue.toInt()
+                            value = newValue.toInt()
+                        }
+                    )
                 }
-            )
+
+                var error by remember { mutableStateOf(false) }
+
+                TextField(
+                    value = value.toString(),
+                    isError = error,
+                    onValueChange = { newValue ->
+                        val newIntValue = newValue.toIntOrNull()
+                        if (newIntValue != null) {
+                            value = newIntValue
+                            error = !range.contains(newIntValue)
+                            if (!error) {
+                                valueInt.value = newIntValue
+                            }
+                        }
+                    },
+                    modifier = Modifier.weight(1f),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Decimal
+                    )
+                )
+            }
+
         }
+
     }
 }
 
+
+/**
+ * Слайдер для выбора вещественного значения
+ * @param name название параметра
+ * @param valueFloat изменяемое значение
+ * @param range пределы выбора величины
+ * @param steps количество шагов для выбора значения
+ */
 @Composable
-fun rotationBox(rotation: MutableState<Float>, range: ClosedFloatingPointRange<Float>, steps: Int) {
+fun rangeBox(name: String, valueFloat: MutableState<Float>, range: ClosedFloatingPointRange<Float>, steps: Int) {
     Box(contentAlignment = Alignment.Center) {
-        Column {
-            Text(text = "Поворот: ${rotation.value.toInt()} градусов", color = Color.Black)
+        var value by remember { mutableStateOf(valueFloat.value) }
+        Column() {
+            Text(text = "${name}: ${valueFloat.value}", color = Color.Black)
+
             Spacer(Modifier.height(10.dp))
-            Slider(
-                value = rotation.value,
-                modifier = Modifier.width(200.dp).height(10.dp),
-                valueRange = range,
-                steps = steps,
-                onValueChange = {
-                    rotation.value = it
+            Row(Modifier.width(400.dp).height(50.dp)) {
+                Column(Modifier.weight(2f), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Slider(
+                        value = value,
+                        valueRange = range,
+                        steps = steps,
+                        modifier = Modifier.align(Alignment.Start),
+                        onValueChange = { newValue ->
+                            valueFloat.value = newValue
+                            value = newValue
+                        }
+                    )
                 }
-            )
+
+                var error by remember { mutableStateOf(false) }
+
+                TextField(
+                    value = value.toString(),
+                    isError = error,
+                    onValueChange = { newValue ->
+                        val newIntValue = newValue.toFloatOrNull()
+                        if (newIntValue != null) {
+                            value = newIntValue
+                            error = !range.contains(newIntValue)
+                            if (!error) {
+                                valueFloat.value = newIntValue
+                            }
+                        }
+                    },
+                    modifier = Modifier.weight(1f),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Decimal
+                    )
+                )
+            }
+
         }
+
     }
 }
 
+
+/**
+ * Селектор ползволяющий выбрать элемент списка через checkbox
+ * @param name название параметра
+ * @param size изменяемое значение
+ * @param values список значений
+ * @param T тип параметра реализующий интерфейс Param
+ * @see Param
+ */
 @Composable
-fun radiusBox(radius: MutableState<Float>, range: ClosedFloatingPointRange<Float>, steps: Int) {
-    Box(contentAlignment = Alignment.Center) {
-        Column {
-            Text(text = "Радиус: ${radius.value.toInt()}", color = Color.Black)
-            Spacer(Modifier.height(10.dp))
-            Slider(
-                value = radius.value,
-                modifier = Modifier.width(200.dp).height(10.dp),
-                valueRange = range,
-                steps = steps,
-                onValueChange = {
-                    radius.value = it
+fun <T : Param> selectItem(name: String, size: MutableState<T>, values: Array<T>) {
+    val stateHorizontal = rememberScrollState(0)
+    Column {
+        Text(
+            text = "${name}: ${size.value}", color = Color.Black
+        )
+        Row(
+            modifier = Modifier
+                .horizontalScroll(stateHorizontal)
+        ) {
+            values.forEach { v ->
+                checkBox(v.getName(),v,size){
+                    size.value = it
                 }
-            )
+            }
         }
+    }
+
+}
+
+/**
+ * Чекбокс
+ * @param name название
+ * @param value значение
+ * @param current текущее значение
+ * @param onCheckedChange метод вызывающийся при выборе
+ * @param T тип параметра
+ */
+@Composable
+fun <T> checkBox(name: String, value: T, current : MutableState<T>,onCheckedChange: (T) -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Checkbox(
+            checked = current.value == value,
+            onCheckedChange = {
+                onCheckedChange(value)
+            },
+        )
+        Text(
+            text = name,
+        )
     }
 }
 
-@Composable
-fun countVerticesBox(countVertices: MutableState<Float>, range: ClosedFloatingPointRange<Float>, steps: Int) {
-    Box(contentAlignment = Alignment.Center) {
-        Column {
-            Text(text = "Количество вершин: ${countVertices.value.toInt()} ", color = Color.Black)
-            Spacer(Modifier.height(10.dp))
-            Slider(
-                value = countVertices.value,
-                modifier = Modifier.width(200.dp).height(10.dp),
-                valueRange = range,
-                steps = steps,
-                onValueChange = {
-                    countVertices.value = it
-                }
-            )
-        }
-    }
-}
 
 @Composable
 fun circleColorSelectionButton(color: Color, onClick: (Color) -> Unit) {
