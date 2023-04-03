@@ -149,7 +149,7 @@ fun <T : Param> selectItem(name: String, size: MutableState<T>, values: Array<T>
                 .horizontalScroll(stateHorizontal)
         ) {
             values.forEach { v ->
-                checkBox(v.getName(),v,size){
+                checkBox(v.getName(), v, size) {
                     size.value = it
                 }
             }
@@ -167,19 +167,21 @@ fun <T : Param> selectItem(name: String, size: MutableState<T>, values: Array<T>
  * @param T тип параметра
  */
 @Composable
-fun <T> checkBox(name: String, value: T, current : MutableState<T>,onCheckedChange: (T) -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Checkbox(
-            checked = current.value == value,
-            onCheckedChange = {
-                onCheckedChange(value)
-            },
-        )
-        Text(
-            text = name,
-        )
+fun <T> checkBox(name: String, value: T, current: MutableState<T>, onCheckedChange: (T) -> Unit) {
+    Box(modifier = Modifier.padding(10.dp)) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Checkbox(
+                checked = current.value == value,
+                onCheckedChange = {
+                    onCheckedChange(value)
+                },
+            )
+            Text(
+                text = name,
+            )
+        }
     }
 }
 

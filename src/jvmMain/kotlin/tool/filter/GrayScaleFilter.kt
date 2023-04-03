@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.plum.filter
+package ru.nsu.ccfit.plum.tool.filter
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize

@@ -8,14 +8,18 @@ import androidx.compose.foundation.onClick
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.*
-import java.awt.BasicStroke
+import androidx.compose.ui.unit.IntSize
+import ru.nsu.ccfit.plum.tool.InterpolationTool
+import java.awt.*
 import java.awt.Color
 
-class PaintCanvas() {
+
+class PaintCanvas {
 
     private val borderWidth = 5
     private val hatchSpacing = 3
     private val hatchColor = Color.BLACK
+
 
     /**
      * Функция возвращает изображение с добавленной границей
@@ -56,10 +60,12 @@ class PaintCanvas() {
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun render(image: PlumImage, onClick: () -> Unit) {
+    fun render(image: PlumImage, interpolation: Boolean, size: IntSize, onClick: () -> Unit) {
         Box(Modifier.fillMaxSize().onClick { onClick.invoke() }) {
             Image(
-                image.addBoarder(borderWidth, hatchSpacing, hatchColor).toComposeImageBitmap(),
+                image.run { if (interpolation) InterpolationTool.draw(image = this, size = size) else this }
+                    .addBoarder(borderWidth, hatchSpacing, hatchColor)
+                    .toComposeImageBitmap(),
                 contentDescription = "Изображение",
                 modifier = Modifier.fillMaxSize()
             )

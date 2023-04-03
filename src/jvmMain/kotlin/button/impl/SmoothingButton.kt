@@ -3,8 +3,8 @@ package ru.nsu.ccfit.plum.button.impl
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Filter
 import ru.nsu.ccfit.plum.button.FilterSettingButton
-import ru.nsu.ccfit.plum.dialog.SmoothingFilterDialog
-import ru.nsu.ccfit.plum.filter.SmoothingFilter
+import ru.nsu.ccfit.plum.dialog.impl.tools.SmoothingFilterDialog
+import ru.nsu.ccfit.plum.tool.filter.SmoothingFilter
 import ru.nsu.ccfit.plum.icon.impl.VectorIcon
 
 // TODO По добавлению фильтра

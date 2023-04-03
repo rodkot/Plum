@@ -17,8 +17,8 @@ import androidx.compose.ui.input.pointer.PointerButton
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import ru.nsu.ccfit.plum.component.Renderable
-import ru.nsu.ccfit.plum.filter.Tool
 import ru.nsu.ccfit.plum.icon.Icon
+import ru.nsu.ccfit.plum.tool.Tool
 
 /**
  * Конструктор кнопки для инструментов

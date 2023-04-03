@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.plum.dialog
+package ru.nsu.ccfit.plum.dialog.impl
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.AwtWindow

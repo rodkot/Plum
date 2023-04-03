@@ -1,6 +1,6 @@
 package ru.nsu.ccfit.plum.button
 
-import ru.nsu.ccfit.plum.filter.Filter
+import ru.nsu.ccfit.plum.tool.filter.Filter
 import ru.nsu.ccfit.plum.icon.Icon
 
 /**

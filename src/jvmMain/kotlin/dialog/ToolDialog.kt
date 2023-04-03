@@ -9,14 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import ru.nsu.ccfit.plum.filter.Filter
+import ru.nsu.ccfit.plum.tool.Tool
 
 /**
- * Конструктор диалогового окна для фильров
- * @param filter фильтр, для которого отображается окно
+ * Конструктор диалогового окна для инструментов
+ * @param tool инструмент, для которого отображается окно
  */
-abstract class FilterDialog(
-    private val filter: Filter
+abstract class ToolDialog(
+    private val tool: Tool
 ) : Dialog {
 
     /**
@@ -37,7 +37,7 @@ abstract class FilterDialog(
             onDismissRequest = {
                 // cancelClick.invoke()
             },
-            title = { Text(text = "Настройка фильтра ${filter.name}") },
+            title = { Text(text = "Настройка ${tool.name}") },
             modifier = Modifier.widthIn(Dp.Unspecified,500.dp),
             text = {
                 Column {

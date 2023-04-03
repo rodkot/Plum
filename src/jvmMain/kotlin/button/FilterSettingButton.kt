@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import ru.nsu.ccfit.plum.dialog.Dialog
-import ru.nsu.ccfit.plum.filter.Filter
+import ru.nsu.ccfit.plum.tool.filter.Filter
 import ru.nsu.ccfit.plum.icon.Icon
 
 /**

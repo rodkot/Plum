@@ -9,15 +9,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import ru.nsu.ccfit.plum.component.*
-import ru.nsu.ccfit.plum.dialog.AboutDialog
-import ru.nsu.ccfit.plum.dialog.FileOpenDialog
-import ru.nsu.ccfit.plum.dialog.FileSaveDialog
-import ru.nsu.ccfit.plum.dialog.ManualDialog
-import ru.nsu.ccfit.plum.filter.Filter
-import ru.nsu.ccfit.plum.filter.SmoothingFilter
+import ru.nsu.ccfit.plum.dialog.impl.AboutDialog
+import ru.nsu.ccfit.plum.dialog.impl.FileOpenDialog
+import ru.nsu.ccfit.plum.dialog.impl.FileSaveDialog
+import ru.nsu.ccfit.plum.dialog.impl.ManualDialog
+import ru.nsu.ccfit.plum.tool.filter.Filter
+import ru.nsu.ccfit.plum.tool.filter.SmoothingFilter
 import java.io.File
 import java.io.IOException
 import javax.imageio.ImageIO
@@ -27,13 +28,15 @@ class MainWindow : Renderable {
 
     private val currentFilter = mutableStateOf<Filter>(SmoothingFilter)
     private val originalMode = mutableStateOf(false)
+    private val interpolationMode = mutableStateOf(false)
 
-    private var size = mutableStateOf(IntSize.Zero)
+
+    private var size = mutableStateOf(IntSize(100, 100))
     private var originalImage =
         ImageIO.read(Thread.currentThread().contextClassLoader.getResource("test-image.png")).toPlumImage()
     private var currentImage = originalImage
 
-    private val toolBar = ToolBar(currentFilter)
+    private val toolBar = ToolBar(currentFilter,interpolationMode)
     private val canvas = PaintCanvas()
 
 
@@ -44,21 +47,28 @@ class MainWindow : Renderable {
         ) {
             val filter = currentFilter.value
 
-            Menu.Controller.filter = currentFilter
+            Menu.filter = currentFilter
+            Menu.interpolation = interpolationMode
 
             Box(Modifier.fillMaxWidth()) {
                 toolBar.render()
             }
 
-            Box(Modifier.fillMaxSize().background(Color.Gray)) {
+            Box(Modifier.fillMaxSize().background(Color.Gray)
+                //TODO: Кастыль
+                // Чтобы отображение размера было прабильное, отнимается размер сколлов
+                .onSizeChanged {
+                    size.value = IntSize(it.width-42,it.height-42) }) {
                 val stateVertical = rememberScrollState(0)
                 val stateHorizontal = rememberScrollState(0)
 
                 Box(
                     modifier = Modifier
-                        .fillMaxSize().padding(13.dp)
+                        .fillMaxSize()
+                        .padding(13.dp)
                         .verticalScroll(stateVertical)
                         .horizontalScroll(stateHorizontal)
+
                 ) {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
@@ -100,7 +110,7 @@ class MainWindow : Renderable {
 
     @Composable
     fun openDialog() {
-        val openAction = remember { Menu.Controller.open }
+        val openAction = remember { Menu.open }
         if (openAction.value) {
 
             FileOpenDialog {
@@ -124,7 +134,7 @@ class MainWindow : Renderable {
 
     @Composable
     fun manualDialog() {
-        val dialogManual = remember { Menu.Controller.instruction }
+        val dialogManual = remember { Menu.instruction }
         if (dialogManual.value) {
             ManualDialog { dialogManual.value = false }
         }
@@ -132,7 +142,7 @@ class MainWindow : Renderable {
 
     @Composable
     fun aboutDialog() {
-        val dialogAbout = remember { Menu.Controller.about }
+        val dialogAbout = remember { Menu.about }
         if (dialogAbout.value) {
             AboutDialog { dialogAbout.value = false }
         }
@@ -140,7 +150,7 @@ class MainWindow : Renderable {
 
     @Composable
     fun saveDialog() {
-        val saveAction = remember { Menu.Controller.save }
+        val saveAction = remember { Menu.save }
         if (saveAction.value) {
             FileSaveDialog {
                 if (it != null) {
@@ -164,8 +174,7 @@ class MainWindow : Renderable {
         val image =
             if (originalMode.value) originalImage else currentImage
 
-
-        canvas.render(image) {
+        canvas.render(image, interpolationMode.value, size.value) {
             originalMode.value = !originalMode.value
         }
     }
