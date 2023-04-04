@@ -1,11 +1,10 @@
 package ru.nsu.ccfit.plum.tool.filter
 
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.unit.IntSize
 import ru.nsu.ccfit.plum.component.Param
 import ru.nsu.ccfit.plum.component.PlumImage
 import ru.nsu.ccfit.plum.draw.addBoarderImage
 import ru.nsu.ccfit.plum.draw.getImageFilter
+import ru.nsu.ccfit.plum.draw.getIntRGB
 import ru.nsu.ccfit.plum.draw.getValueFilter
 import kotlin.math.exp
 import kotlin.math.pow
@@ -54,7 +53,7 @@ object SmoothingFilter : Filter("Cглаживающий фильтр") {
         val matrixFilter = getGaussMatrix(size.n, sigma)
         val imageBoarder = newImage.addBoarderImage(size.n)
 
-        newImage.getImageFilter { x, y -> imageBoarder.getValueFilter(matrixFilter, x, y) }
+        newImage.getImageFilter { x, y -> imageBoarder.getValueFilter(matrixFilter, x, y).getIntRGB() }
         return newImage
     }
 }
