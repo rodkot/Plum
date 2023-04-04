@@ -11,7 +11,7 @@ object GrayScaleFilter : Filter("Черно-белый фильтр") {
     private var wG = 0.72
     private var wB = 0.07
 
-    override fun draw(image: PlumImage, pressOffset: Offset, releaseOffset: Offset, size: IntSize): PlumImage {
+    override fun permit(image: PlumImage): PlumImage {
         val newImage = image.copy()
         newImage.getImageFilter { x, y -> getGrayColor(image, x, y) }
         return newImage
