@@ -32,12 +32,10 @@ fun PlumImage.getValueFilter(matrixFilter: Array<DoubleArray>, x: Int, y: Int): 
     var resultGreen = 0.0
     for (i in matrixFilter.indices) {
         for (j in matrixFilter.indices) {
-            val rgb = getRGB(x + i, y + j)
-            val red = rgb shr 16 and 0xff
+            val (red, green, blue) = getPixel(x + i, y + j)
+
             resultRed += red * matrixFilter[i][j]
-            val blue = rgb and 0xff
             resultBlue += blue * matrixFilter[i][j]
-            val green = rgb shr 8 and 0xff
             resultGreen += green * matrixFilter[i][j]
         }
     }

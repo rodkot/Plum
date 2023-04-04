@@ -17,6 +17,14 @@ class PlumImage(startWidth: Int, startHeight: Int) :
         g.dispose()
         return b
     }
+
+    fun getPixel(x: Int, y: Int): Triple<Int,Int,Int> {
+        val rgb = super.getRGB(x, y)
+        val r = rgb shr 16 and 0xFF
+        val g = rgb shr 8 and 0xFF
+        val b = rgb and 0xFF
+        return Triple(r,g,b)
+    }
 }
 
 fun BufferedImage.toPlumImage(): PlumImage {

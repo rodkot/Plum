@@ -8,9 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import ru.nsu.ccfit.plum.button.impl.EmbossingButton
 import ru.nsu.ccfit.plum.button.impl.GrayScaleButton
 import ru.nsu.ccfit.plum.button.impl.InterpolationButton
 import ru.nsu.ccfit.plum.button.impl.SmoothingButton
+import ru.nsu.ccfit.plum.tool.filter.EmbossingFilter
 import ru.nsu.ccfit.plum.tool.filter.Filter
 import ru.nsu.ccfit.plum.tool.filter.GrayScaleFilter
 import ru.nsu.ccfit.plum.tool.filter.SmoothingFilter
@@ -37,6 +39,11 @@ class ToolBar(
                             SmoothingButton(currentFilter.value is SmoothingFilter) {
                                 currentFilter.value = SmoothingFilter
                             }.render()
+
+                            EmbossingButton(currentFilter.value is EmbossingFilter) {
+                                currentFilter.value = EmbossingFilter
+                            }.render()
+
                             GrayScaleButton(currentFilter.value is GrayScaleFilter) {
                                 currentFilter.value = GrayScaleFilter
                             }.render()
