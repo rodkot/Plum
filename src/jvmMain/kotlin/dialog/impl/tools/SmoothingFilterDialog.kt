@@ -9,7 +9,12 @@ import ru.nsu.ccfit.plum.tool.filter.SmoothingFilter
 
 // TODO По добавлению фильтра
 // При необходимости изменения параметров необходимо добавить диалоговое окно
-class SmoothingFilterDialog : ToolDialog(SmoothingFilter) {
+class SmoothingFilterDialog : ToolDialog(
+    SmoothingFilter/*
+TODO По добавлению фильра
+Не забудь сдесь написать нужный фильтр
+*/
+) {
     // TODO По добавлению фильтра
     // Изменяемые параметры
     private val sigma = mutableStateOf(SmoothingFilter.sigma)
