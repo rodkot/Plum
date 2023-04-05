@@ -43,6 +43,10 @@ class ToolBar(
                             GrayScaleButton(currentFilter.value is GrayScaleFilter) {
                                 currentFilter.value = GrayScaleFilter
                             }.render()
+
+                            MirrorButton(currentFilter.value is MirrorFilter) {
+                                currentFilter.value = MirrorFilter
+                            }.render()
                         }
                     }
                 }
