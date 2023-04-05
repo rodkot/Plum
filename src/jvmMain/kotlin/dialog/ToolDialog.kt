@@ -7,15 +7,16 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import ru.nsu.ccfit.plum.filter.Filter
+import ru.nsu.ccfit.plum.tool.Tool
 
 /**
- * Конструктор диалогового окна для фильров
- * @param filter фильтр, для которого отображается окно
+ * Конструктор диалогового окна для инструментов
+ * @param tool инструмент, для которого отображается окно
  */
-abstract class FilterDialog(
-    private val filter: Filter
+abstract class ToolDialog(
+    private val tool: Tool
 ) : Dialog {
 
     /**
@@ -36,7 +37,8 @@ abstract class FilterDialog(
             onDismissRequest = {
                 // cancelClick.invoke()
             },
-            title = { Text(text = "Настройка фильтра ${filter.name}") },
+            title = { Text(text = "Настройка ${tool.name}") },
+            modifier = Modifier.widthIn(Dp.Unspecified,500.dp),
             text = {
                 Column {
                     settingBox()
@@ -50,8 +52,10 @@ abstract class FilterDialog(
                     Button(
                         modifier = Modifier.weight(1f).padding(8.dp),
                         onClick = {
-
                             updateFilter()
+
+                            //TODO: Кастыль для работы применения фильтра при изменении его параметров
+                            tool.check.value = !tool.check.value
 
                             confirmClick()
                             cancelClick()

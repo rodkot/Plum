@@ -1,10 +1,10 @@
-package ru.nsu.ccfit.plum.filter
+package ru.nsu.ccfit.plum.tool.filter
 
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.unit.IntSize
+import ru.nsu.ccfit.plum.component.Param
 import ru.nsu.ccfit.plum.component.PlumImage
 import ru.nsu.ccfit.plum.draw.addBoarderImage
 import ru.nsu.ccfit.plum.draw.getImageFilter
+import ru.nsu.ccfit.plum.draw.getIntRGB
 import ru.nsu.ccfit.plum.draw.getValueFilter
 import kotlin.math.exp
 import kotlin.math.pow
@@ -12,8 +12,18 @@ import kotlin.math.pow
 // TODO По добавлению фильтра
 // Нужно добавить имплементацию фильра
 object SmoothingFilter : Filter("Cглаживающий фильтр") {
+
+    enum class Size(val n: Int) : Param {
+        N3x3(3),
+        N5x5(5);
+
+        override fun getName(): String {
+            return toString()
+        }
+    }
+
     var sigma: Float = 1.5F
-    var n: Int = 10
+    var size: Size = Size.N3x3
 
     /**
      * Функция считает матрицу Гаусса
@@ -38,12 +48,12 @@ object SmoothingFilter : Filter("Cглаживающий фильтр") {
         return matrix
     }
 
-    override fun draw(image: PlumImage, pressOffset: Offset, releaseOffset: Offset, size: IntSize): PlumImage {
+    override fun permit(image: PlumImage): PlumImage {
         val newImage = image.copy()
-        val matrixFilter = getGaussMatrix(n, sigma)
-        val imageBoarder = newImage.addBoarderImage(n)
+        val matrixFilter = getGaussMatrix(size.n, sigma)
+        val imageBoarder = newImage.addBoarderImage(size.n)
 
-        newImage.getImageFilter { x, y -> imageBoarder.getValueFilter(matrixFilter, x, y) }
+        newImage.getImageFilter { x, y -> imageBoarder.getValueFilter(matrixFilter, x, y).getIntRGB() }
         return newImage
     }
 }

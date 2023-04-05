@@ -26,22 +26,38 @@ fun PlumImage.getImageFilter(getNewColorPixel: (x: Int, y: Int) -> Int) {
  * @param y координата изначального изображения
  * @return целевой цвет для данной координаты
  */
-fun PlumImage.getValueFilter(matrixFilter: Array<DoubleArray>, x: Int, y: Int): Int {
+fun PlumImage.getValueFilter(matrixFilter: Array<DoubleArray>, x: Int, y: Int): Triple<Int, Int, Int> {
     var resultRed = 0.0
     var resultBlue = 0.0
     var resultGreen = 0.0
     for (i in matrixFilter.indices) {
         for (j in matrixFilter.indices) {
-            val rgb = getRGB(x + i, y + j)
-            val red = rgb shr 16 and 0xff
+            val (red, green, blue) = getPixel(x + i, y + j)
+
             resultRed += red * matrixFilter[i][j]
-            val blue = rgb and 0xff
             resultBlue += blue * matrixFilter[i][j]
-            val green = rgb shr 8 and 0xff
             resultGreen += green * matrixFilter[i][j]
         }
     }
-    return 0xff shl 24 or (resultRed.toInt() shl 16) or (resultGreen.toInt() shl 8) or resultBlue.toInt()
+    return Triple(resultRed.toInt(), resultGreen.toInt(), resultBlue.toInt())
+}
+
+
+/**
+ * Фунция вычисления итого цвета по фильру
+ *
+ * @param matrixFilter Матрица фильра
+ * @param x координата изначального изображения
+ * @param y координата изначального изображения
+ * @return целевой цвет для данной координаты
+ */
+fun PlumImage.getValueFilter(matrixFilter: Array<IntArray>, x: Int, y: Int): Triple<Int, Int, Int> {
+
+    return getValueFilter(matrixFilter.map { it -> it.map { it.toDouble() }.toDoubleArray() }.toTypedArray(), x, y)
+}
+
+fun  Triple<Int,Int,Int>.getIntRGB():Int{
+    return (this.first shl 16) or (this.second shl 8) or this.third
 }
 
 /**

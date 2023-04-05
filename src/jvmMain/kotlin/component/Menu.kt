@@ -12,8 +12,16 @@ import ru.nsu.ccfit.plum.filter.Filter
 import ru.nsu.ccfit.plum.filter.GrayScaleFilter
 import ru.nsu.ccfit.plum.filter.RotateFilter
 import ru.nsu.ccfit.plum.filter.SmoothingFilter
+import ru.nsu.ccfit.plum.tool.InterpolationTool
+import ru.nsu.ccfit.plum.tool.filter.*
 
-class Menu() {
+object Menu {
+    var save = mutableStateOf(false)
+    var open = mutableStateOf(false)
+    var filter = mutableStateOf<Filter>(SmoothingFilter)
+    var instruction = mutableStateOf(false)
+    var interpolation = mutableStateOf(false)
+    var about = mutableStateOf(false)
 
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
@@ -22,48 +30,52 @@ class Menu() {
             Menu("Файл", mnemonic = 'F') {
                 Item(
                     "Сохранить",
-                    onClick = { Controller.save.value = true },
+                    onClick = { save.value = true },
                     shortcut = KeyShortcut(Key.S, ctrl = true)
                 )
                 Item(
                     "Открыть",
-                    onClick = { Controller.open.value = true },
+                    onClick = { open.value = true },
                     shortcut = KeyShortcut(Key.P, ctrl = true)
                 )
             }
             Menu("Фильтры", mnemonic = 'I') {
                 // TODO По добавлению фильтра
                 // Здесь необходимо добавить схожую конструкцию
+                createFilterMenuItem(EmbossingFilter)
+                createFilterMenuItem(BorderHighlightingFilter)
                 createFilterMenuItem(GrayScaleFilter)
                 createFilterMenuItem(SmoothingFilter)
                 createFilterMenuItem(RotateFilter)
             }
+            Menu("Инструменты", mnemonic = 'I') {
+                CheckboxItem(
+                    InterpolationTool.name,
+                    checked = interpolation.value,
+                    onCheckedChange = {
+                        interpolation.value = !interpolation.value
+                    })
+            }
             Menu("Справка", mnemonic = 'I') {
-                Item("Инструкция", onClick = { Controller.instruction.value = true })
-                Item("О программе", onClick = { Controller.about.value = true })
+                Item("Инструкция", onClick = { instruction.value = true })
+                Item("О программе", onClick = { about.value = true })
             }
         }
     }
 
     /**
      * Функция создания для фильра нового объекта меню
-     * @param filter добавлямый фильтр
+     * @param addFilter добавлямый фильтр
      */
     @Composable
-    fun MenuScope.createFilterMenuItem(filter: Filter) =
+    fun MenuScope.createFilterMenuItem(addFilter: Filter) =
         CheckboxItem(
-            filter.name,
-            checked = Controller.filter.value == filter,
+            addFilter.name,
+            checked = filter.value == addFilter,
             onCheckedChange = {
-                Controller.filter.value = filter
+                filter.value = addFilter
             }
         )
 
-    object Controller {
-        var save = mutableStateOf(false)
-        var open = mutableStateOf(false)
-        var filter = mutableStateOf<Filter>(SmoothingFilter)
-        var instruction = mutableStateOf(false)
-        var about = mutableStateOf(false)
-    }
+
 }
