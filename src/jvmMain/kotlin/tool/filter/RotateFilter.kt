@@ -30,17 +30,21 @@ object RotateFilter : Filter("Фильтр поворота") {
 
             if (i == 0) {
                 maxX = newX
-                maxY = newY
-                minX = newY
-                minY = newY
-            } else if (newX > maxX) {
-                maxX = newX
-            } else if (newX < minX) {
                 minX = newX
-            } else if (newY < minY) {
-                minY = newY
-            } else if (newY > maxY) {
                 maxY = newY
+                minY = newY
+            } else {
+                if (newX > maxX) {
+                    maxX = newX
+                } else if (newX < minX) {
+                    minX = newX
+                }
+
+                if (newY < minY) {
+                    minY = newY
+                } else if (newY > maxY) {
+                    maxY = newY
+                }
             }
 
             Pair(
@@ -59,8 +63,12 @@ object RotateFilter : Filter("Фильтр поворота") {
         val pixelMap = getRotatedPixelMap(original, original.height, original.width, cos, sin)
         val newImage = PlumImage(maxX - minX + 1, maxY - minY + 1)
 
-        for (pixel in pixelMap) {
-            newImage.setRGB(pixel.first.x - minX, pixel.first.y - minY, pixel.second)
+        pixelMap.forEach {pixel ->
+            try {
+                newImage.setRGB(pixel.first.x - minX, pixel.first.y - minY, pixel.second)
+            } catch (e: ArrayIndexOutOfBoundsException) {
+                println("Out of bounds in rotation filter: point is ${pixel.first.x - minX}, ${pixel.first.y - minY}, when limits are ${newImage.width}, ${newImage.height}")
+            }
         }
 
         return newImage
