@@ -1,10 +1,7 @@
 package ru.nsu.ccfit.plum.tool.filter
 
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.unit.IntSize
 import ru.nsu.ccfit.plum.component.PlumImage
 import ru.nsu.ccfit.plum.draw.getImageFilter
-import java.awt.image.BufferedImage
 
 object GrayScaleFilter : Filter("Черно-белый фильтр") {
     private var wR = 0.21
@@ -17,12 +14,16 @@ object GrayScaleFilter : Filter("Черно-белый фильтр") {
         return newImage
     }
 
+    fun getGrayValue(rgb: Int): Int {
+        val red = (rgb shr 16) and 0xff
+        val green = (rgb shr 8) and 0xff
+        val blue = rgb and 0xff
+        return  (wR * red + wG * green + wB * blue).toInt()
+    }
+
     private fun getGrayColor(image: PlumImage, x: Int, y: Int): Int {
-
-        val (red, green, blue) = image.getPixel(x, y)
-
         val grayValue: Int =
-            (wR * red + wG * green + wB * blue).toInt()
+           getGrayValue(image.getRGB(x, y))
         return (grayValue shl 16) or (grayValue shl 8) or grayValue
     }
 

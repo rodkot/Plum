@@ -9,10 +9,7 @@ import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.MenuBar
 import androidx.compose.ui.window.MenuScope
 import ru.nsu.ccfit.plum.tool.InterpolationTool
-import ru.nsu.ccfit.plum.tool.filter.EmbossingFilter
-import ru.nsu.ccfit.plum.tool.filter.Filter
-import ru.nsu.ccfit.plum.tool.filter.GrayScaleFilter
-import ru.nsu.ccfit.plum.tool.filter.SmoothingFilter
+import ru.nsu.ccfit.plum.tool.filter.*
 
 object Menu {
     var save = mutableStateOf(false)
@@ -42,6 +39,7 @@ object Menu {
                 // TODO По добавлению фильтра
                 // Здесь необходимо добавить схожую конструкцию
                 createFilterMenuItem(EmbossingFilter)
+                createFilterMenuItem(BorderHighlightingFilter)
                 createFilterMenuItem(GrayScaleFilter)
                 createFilterMenuItem(SmoothingFilter)
             }

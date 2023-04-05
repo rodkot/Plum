@@ -8,14 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import ru.nsu.ccfit.plum.button.impl.EmbossingButton
-import ru.nsu.ccfit.plum.button.impl.GrayScaleButton
-import ru.nsu.ccfit.plum.button.impl.InterpolationButton
-import ru.nsu.ccfit.plum.button.impl.SmoothingButton
-import ru.nsu.ccfit.plum.tool.filter.EmbossingFilter
-import ru.nsu.ccfit.plum.tool.filter.Filter
-import ru.nsu.ccfit.plum.tool.filter.GrayScaleFilter
-import ru.nsu.ccfit.plum.tool.filter.SmoothingFilter
+import ru.nsu.ccfit.plum.button.impl.*
+import ru.nsu.ccfit.plum.tool.filter.*
 
 
 class ToolBar(
@@ -26,9 +20,7 @@ class ToolBar(
     @Composable
     override fun render() {
         TopAppBar(title = {
-//            Row {
-//                Text(currentTool.value.name)
-//            }
+
         }, modifier = Modifier.fillMaxWidth(),
             actions = {
                 Row(Modifier.weight(5f)) {
@@ -44,6 +36,10 @@ class ToolBar(
                                 currentFilter.value = EmbossingFilter
                             }.render()
 
+                            BorderHighlightingButton(currentFilter.value is BorderHighlightingFilter) {
+                                currentFilter.value = BorderHighlightingFilter
+                            }.render()
+
                             GrayScaleButton(currentFilter.value is GrayScaleFilter) {
                                 currentFilter.value = GrayScaleFilter
                             }.render()
@@ -55,7 +51,7 @@ class ToolBar(
                     Column(Modifier.fillMaxWidth()) {
                         Row(Modifier.align(Alignment.End)) {
                             InterpolationButton(interpolation.value) {
-                                interpolation.value=!interpolation.value
+                                interpolation.value = !interpolation.value
                             }.render()
                         }
                     }

@@ -52,8 +52,10 @@ abstract class ToolDialog(
                     Button(
                         modifier = Modifier.weight(1f).padding(8.dp),
                         onClick = {
-
                             updateFilter()
+
+                            //TODO: Кастыль для работы применения фильтра при изменении его параметров
+                            tool.check.value = !tool.check.value
 
                             confirmClick()
                             cancelClick()

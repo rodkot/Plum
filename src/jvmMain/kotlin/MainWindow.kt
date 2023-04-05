@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
@@ -30,13 +29,12 @@ class MainWindow : Renderable {
     private val originalMode = mutableStateOf(false)
     private val interpolationMode = mutableStateOf(false)
 
-
     private var size = mutableStateOf(IntSize(100, 100))
     private var originalImage =
         ImageIO.read(Thread.currentThread().contextClassLoader.getResource("test-image.png")).toPlumImage()
     private var currentImage = originalImage
 
-    private val toolBar = ToolBar(currentFilter,interpolationMode)
+    private val toolBar = ToolBar(currentFilter, interpolationMode)
     private val canvas = PaintCanvas()
 
 
@@ -58,7 +56,8 @@ class MainWindow : Renderable {
                 //TODO: Кастыль
                 // Чтобы отображение размера было прабильное, отнимается размер сколлов
                 .onSizeChanged {
-                    size.value = IntSize(it.width-42,it.height-42) }) {
+                    size.value = IntSize(it.width - 42, it.height - 42)
+                }) {
                 val stateVertical = rememberScrollState(0)
                 val stateHorizontal = rememberScrollState(0)
 
@@ -70,15 +69,14 @@ class MainWindow : Renderable {
                         .horizontalScroll(stateHorizontal)
 
                 ) {
+
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
-
+                    //TODO: Кастыль для работы применения фильтра при изменении его параметров
+                    (filter.check.value)
                     //Приминение фильтра
-                    currentImage = filter.draw(
-                        originalImage,
-                        Offset(0f, 0f),
-                        Offset(0f, 0f),
-                        size.value
+                    currentImage = filter.permit(
+                        originalImage
                     )
 
                     drawImage()
