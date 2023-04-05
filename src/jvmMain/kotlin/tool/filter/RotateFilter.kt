@@ -1,7 +1,5 @@
-package ru.nsu.ccfit.plum.filter
+package ru.nsu.ccfit.plum.tool.filter
 
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.unit.IntSize
 import ru.nsu.ccfit.plum.component.PlumImage
 import java.awt.Point
 
@@ -73,5 +71,5 @@ object RotateFilter : Filter("Фильтр поворота") {
      * /cos A -sin A \
      * \sin A  cos A /
      */
-    override fun draw(image: PlumImage, pressOffset: Offset, releaseOffset: Offset, size: IntSize) = rotateImage(image)
+    override fun permit(image: PlumImage): PlumImage = rotateImage(image)
 }

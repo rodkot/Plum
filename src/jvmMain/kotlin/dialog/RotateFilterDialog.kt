@@ -2,12 +2,10 @@ package ru.nsu.ccfit.plum.dialog
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import ru.nsu.ccfit.plum.component.angleBox
-import ru.nsu.ccfit.plum.component.countVerticesBox
-import ru.nsu.ccfit.plum.filter.RotateFilter
-import ru.nsu.ccfit.plum.filter.SmoothingFilter
+import ru.nsu.ccfit.plum.component.rangeBox
+import ru.nsu.ccfit.plum.tool.filter.RotateFilter
 
-class RotateFilterDialog: FilterDialog(SmoothingFilter) {
+class RotateFilterDialog: ToolDialog(RotateFilter) {
     private val angle = mutableStateOf(RotateFilter.angle)
 
     override fun updateFilter() {
@@ -16,6 +14,6 @@ class RotateFilterDialog: FilterDialog(SmoothingFilter) {
 
     @Composable
     override fun settingBox() {
-        angleBox(angle, -180f..180f, 10)
+        rangeBox("Угол",angle,-180..180)
     }
 }

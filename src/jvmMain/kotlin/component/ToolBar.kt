@@ -11,13 +11,7 @@ import androidx.compose.ui.Modifier
 import ru.nsu.ccfit.plum.button.impl.*
 import ru.nsu.ccfit.plum.tool.filter.*
 import ru.nsu.ccfit.plum.button.impl.GrayScaleButton
-import ru.nsu.ccfit.plum.button.impl.RotateButton
 import ru.nsu.ccfit.plum.button.impl.SmoothingButton
-import ru.nsu.ccfit.plum.filter.Filter
-import ru.nsu.ccfit.plum.filter.GrayScaleFilter
-import ru.nsu.ccfit.plum.filter.RotateFilter
-import ru.nsu.ccfit.plum.filter.SmoothingFilter
-
 
 class ToolBar(
     private val currentFilter: MutableState<Filter>,
@@ -49,6 +43,10 @@ class ToolBar(
 
                             GrayScaleButton(currentFilter.value is GrayScaleFilter) {
                                 currentFilter.value = GrayScaleFilter
+                            }.render()
+
+                            RotateButton(currentFilter.value is RotateFilter) {
+                                currentFilter.value = RotateFilter
                             }.render()
                         }
                     }
