@@ -42,6 +42,7 @@ object Menu {
                 createFilterMenuItem(BorderHighlightingFilter)
                 createFilterMenuItem(GrayScaleFilter)
                 createFilterMenuItem(SmoothingFilter)
+                createFilterMenuItem(DitheringFilter)
                 createFilterMenuItem(RotateFilter)
             }
             Menu("Инструменты", mnemonic = 'I') {

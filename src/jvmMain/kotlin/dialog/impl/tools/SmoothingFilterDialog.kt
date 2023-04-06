@@ -30,9 +30,7 @@ TODO По добавлению фильра
     // В функцию нужно добавить необходимые инструменты для изменения параметров
     @Composable
     override fun settingBox() {
-
-        rangeBox("Sigma", sigma, 0f..1f, 11)
-        selectItem("Размер", size, SmoothingFilter.Size.values())
-
+        rangeBox("Sigma", sigma, 0f..100f, 11)
+        rangeBox("Размер", size, 3..11)
     }
 }
