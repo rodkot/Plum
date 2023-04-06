@@ -185,6 +185,25 @@ fun <T> checkBox(name: String, value: T, current: MutableState<T>, onCheckedChan
 
 
 @Composable
+fun angleBox(angle: MutableState<Int>, range: ClosedFloatingPointRange<Float>, steps: Int) {
+    Box(contentAlignment = Alignment.Center) {
+        Column {
+            Text(text = "Угол поворота: ${angle.value} ", color = Color.Black)
+            Spacer(Modifier.height(10.dp))
+            Slider(
+                value = angle.value.toFloat(),
+                modifier = Modifier.width(200.dp).height(10.dp),
+                valueRange = range,
+                steps = steps,
+                onValueChange = {
+                    angle.value = it.toInt()
+                }
+            )
+        }
+    }
+}
+
+@Composable
 fun circleColorSelectionButton(color: Color, onClick: (Color) -> Unit) {
     Spacer(
         modifier = Modifier.background(
