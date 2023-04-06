@@ -172,11 +172,9 @@ fun <T> checkBox(name: String, value: T, current: MutableState<T>, onCheckedChan
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Checkbox(
-                checked = current.value == value,
-                onCheckedChange = {
-                    onCheckedChange(value)
-                },
+            RadioButton(
+                selected = current.value == value,
+                onClick = { onCheckedChange(value) }
             )
             Text(
                 text = name,
