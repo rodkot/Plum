@@ -24,6 +24,7 @@ TODO По добавлению фильра
     // Здесь нужно приминить настройки выбранные пользователем
     override fun updateFilter() {
         SmoothingFilter.sigma = sigma.value
+        SmoothingFilter.size = size.value
     }
 
     // TODO По добавлению фильтра
