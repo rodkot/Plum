@@ -142,7 +142,7 @@ fun <T : Param> selectItem(name: String, size: MutableState<T>, values: Array<T>
     val stateHorizontal = rememberScrollState(0)
     Column {
         Text(
-            text = "${name}: ${size.value}", color = Color.Black
+            text = "${name}: ${size.value.getName()}", color = Color.Black
         )
         Row(
             modifier = Modifier

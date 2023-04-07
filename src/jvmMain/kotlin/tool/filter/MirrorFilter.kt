@@ -43,8 +43,9 @@ object MirrorFilter : Filter("Отражение") {
         VERTICAL,
         HORIZONTAL;
 
-        override fun getName(): String {
-            return toString()
+        override fun getName() = when(this) {
+            VERTICAL -> "Вертикальный"
+            HORIZONTAL ->  "Горизонтальный"
         }
     }
 }
