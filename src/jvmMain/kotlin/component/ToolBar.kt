@@ -43,6 +43,9 @@ class ToolBar(
                             GrayScaleButton(currentFilter.value is GrayScaleFilter) {
                                 currentFilter.value = GrayScaleFilter
                             }.render()
+                            DitheringButton(currentFilter.value is DitheringFilter) {
+                                currentFilter.value = DitheringFilter
+                            }.render()
 
                             MirrorButton(currentFilter.value is MirrorFilter) {
                                 currentFilter.value = MirrorFilter
