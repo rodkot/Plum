@@ -5,7 +5,7 @@ import ru.nsu.ccfit.plum.tool.enums.Alignment
 
 
 object MirrorFilter : Filter("Отражение") {
-    private var alignment = Alignment.VERTICAL
+    var alignment = Alignment.VERTICAL
 
     override fun permit(image: PlumImage): PlumImage {
         val newImage = image.copy()
