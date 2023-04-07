@@ -20,7 +20,5 @@ class BorderHighlightingFilterDialog : ToolDialog(BorderHighlightingFilter) {
     override fun settingBox() {
         selectItem("Алгоритм", algorithm, BorderHighlightingFilter.Algorithm.values())
         rangeBox("Порог бинаризации",binarization,2..254)
-
-
     }
 }

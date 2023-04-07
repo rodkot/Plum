@@ -1,7 +1,7 @@
 package ru.nsu.ccfit.plum.tool.filter
 
+import ru.nsu.ccfit.plum.component.Param
 import ru.nsu.ccfit.plum.component.PlumImage
-import ru.nsu.ccfit.plum.tool.enums.Alignment
 
 
 object MirrorFilter : Filter("Отражение") {
@@ -40,5 +40,12 @@ object MirrorFilter : Filter("Отражение") {
         }
     }
 
+    enum class Alignment: Param {
+        VERTICAL,
+        HORIZONTAL;
 
+        override fun getName(): String {
+            return toString()
+        }
+    }
 }
