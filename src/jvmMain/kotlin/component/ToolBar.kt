@@ -51,6 +51,10 @@ class ToolBar(
                             RotateButton(currentFilter.value is RotateFilter) {
                                 currentFilter.value = RotateFilter
                             }.render()
+
+                            MirrorButton(currentFilter.value is MirrorFilter) {
+                                currentFilter.value = MirrorFilter
+                            }.render()
                         }
                     }
                 }
