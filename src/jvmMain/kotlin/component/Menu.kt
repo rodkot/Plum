@@ -44,6 +44,7 @@ object Menu {
                 createFilterMenuItem(SmoothingFilter)
                 createFilterMenuItem(RotateFilter)
                 createFilterMenuItem(DitheringFilter)
+                createFilterMenuItem(GammaCorrectionFilter)
             }
             Menu("Инструменты", mnemonic = 'I') {
                 CheckboxItem(

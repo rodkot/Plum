@@ -10,7 +10,7 @@ import java.awt.Dimension
 class SizeWindows {
     companion object {
         fun height(): Int = 480
-        fun width(): Int = 640
+        fun width(): Int = 700
     }
 }
 
