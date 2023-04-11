@@ -6,4 +6,4 @@ import ru.nsu.ccfit.plum.tool.filter.BleachBypassFilter
 import ru.nsu.ccfit.plum.tool.filter.GrayScaleFilter
 
 class BleachBypassButton(checked: Boolean, onClick: () -> Unit) :
-    FilterButton(BleachBypassFilter, checked, ImageIcon("tool/gray-scale.png"), onClick)
+    FilterButton(BleachBypassFilter, checked, ImageIcon("tool/bleach-logo.png"), onClick)

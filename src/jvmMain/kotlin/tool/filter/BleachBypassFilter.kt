@@ -5,7 +5,7 @@ import java.awt.Color
 import java.awt.image.BufferedImage
 
 
-object BleachBypassFilter : Filter("Тиснение") {
+object BleachBypassFilter : Filter("Удержание серебра") {
     private val amount = 0.5f
 
     private fun bleachBypass(image: PlumImage, amount: Float): PlumImage {
