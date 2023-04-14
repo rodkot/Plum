@@ -55,6 +55,10 @@ class ToolBar(
                             MirrorButton(currentFilter.value is MirrorFilter) {
                                 currentFilter.value = MirrorFilter
                             }.render()
+
+                            InversionButton(currentFilter.value is InversionFilter) {
+                                currentFilter.value = InversionFilter
+                            }.render()
                         }
                     }
                 }
