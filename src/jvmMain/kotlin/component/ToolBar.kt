@@ -10,7 +10,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import ru.nsu.ccfit.plum.button.impl.*
 import ru.nsu.ccfit.plum.tool.filter.*
-
+import ru.nsu.ccfit.plum.button.impl.GrayScaleButton
+import ru.nsu.ccfit.plum.button.impl.SmoothingButton
 
 class ToolBar(
     private val currentFilter: MutableState<Filter>,
@@ -46,6 +47,10 @@ class ToolBar(
 
                             DitheringButton(currentFilter.value is DitheringFilter) {
                                 currentFilter.value = DitheringFilter
+                            }.render()
+
+                            RotateButton(currentFilter.value is RotateFilter) {
+                                currentFilter.value = RotateFilter
                             }.render()
 
                             BleachBypassButton(currentFilter.value is BleachBypassFilter) {
