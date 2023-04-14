@@ -53,6 +53,14 @@ class ToolBar(
                                 currentFilter.value = RotateFilter
                             }.render()
 
+                            MirrorButton(currentFilter.value is MirrorFilter) {
+                                currentFilter.value = MirrorFilter
+                            }.render()
+
+                            InversionButton(currentFilter.value is InversionFilter) {
+                                currentFilter.value = InversionFilter
+                            }.render()
+
                             BleachBypassButton(currentFilter.value is BleachBypassFilter) {
                                 currentFilter.value = BleachBypassFilter
                             }.render()
