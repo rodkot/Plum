@@ -131,7 +131,6 @@ object DitheringFilter : Filter("Дизеринг") {
         multiplyValue: Double
     ) {
         if (outOfBounds(image, i, j)) {
-            //TODO:Обработать границы
             return
         }
         val pixelToProcess = Color(image.getRGB(i, j))
