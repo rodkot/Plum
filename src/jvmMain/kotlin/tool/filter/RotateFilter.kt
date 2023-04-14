@@ -2,6 +2,7 @@ package ru.nsu.ccfit.plum.tool.filter
 
 import ru.nsu.ccfit.plum.component.PlumImage
 import java.awt.Point
+import kotlin.math.absoluteValue
 
 
 object RotateFilter : Filter("Фильтр поворота") {
@@ -15,63 +16,35 @@ object RotateFilter : Filter("Фильтр поворота") {
     private var minY = 0
     private var maxY = 0
 
-    private fun getRotatedPixelMap(
-        original: PlumImage,
-        height: Int,
-        width: Int,
-        cos: Double,
-        sin: Double
-    ) = Array(height * width) { i ->
-            val x = i % width
-            val y = i / width
-
-            val newX = (x * cos - y * sin).toInt()
-            val newY = (x * sin + y * cos).toInt()
-
-            if (i == 0) {
-                maxX = newX
-                minX = newX
-                maxY = newY
-                minY = newY
-            } else {
-                if (newX > maxX) {
-                    maxX = newX
-                } else if (newX < minX) {
-                    minX = newX
-                }
-
-                if (newY < minY) {
-                    minY = newY
-                } else if (newY > maxY) {
-                    maxY = newY
-                }
-            }
-
-            Pair(
-                Point(
-                    newX,
-                    newY
-                ),
-                original.getRGB(x, y)
-            )
-        }
-
     private fun rotateImage(original: PlumImage): PlumImage {
         val radians = Math.toRadians(angle.toDouble())
         val cos = Math.cos(radians)
         val sin = Math.sin(radians)
-        val pixelMap = getRotatedPixelMap(original, original.height, original.width, cos, sin)
-        val newImage = PlumImage(maxX - minX + 1, maxY - minY + 1)
+        val height = (original.width * cos).toInt()
+        val newImg = PlumImage(original.width, original.height)
 
-        pixelMap.forEach {pixel ->
-            try {
-                newImage.setRGB(pixel.first.x - minX, pixel.first.y - minY, pixel.second)
-            } catch (e: ArrayIndexOutOfBoundsException) {
-                println("Out of bounds in rotation filter: point is ${pixel.first.x - minX}, ${pixel.first.y - minY}, when limits are ${newImage.width}, ${newImage.height}")
+
+        for (x in 0 until original.width)
+            for (y in 0 until original.height) {
+                val newX = ((x - original.width / 2)* cos - (y - original.height / 2) * sin).toInt() + original.width / 2
+                val newY = ((x - original.width / 2) * sin + (y - original.height / 2) * cos).toInt() + original.height / 2
+
+                val color = if ( newX > 0
+                    && newY > 0
+                    && newX < original.width
+                    && newY < original.height) original.getRGB(
+                    newX,
+                    newY
+                ) else -1
+
+                newImg.setRGB(
+                    x,
+                    y,
+                    color
+                )
             }
-        }
 
-        return newImage
+        return newImg
     }
 
     /**
