@@ -2,8 +2,10 @@ package ru.nsu.ccfit.plum.tool.filter
 
 import ru.nsu.ccfit.plum.component.Param
 import ru.nsu.ccfit.plum.component.PlumImage
+import ru.nsu.ccfit.plum.draw.getIntRGB
 import java.awt.Color
 import java.awt.image.BufferedImage
+import kotlin.math.roundToInt
 
 
 object DitheringFilter : Filter("Дизеринг") {
@@ -23,38 +25,39 @@ object DitheringFilter : Filter("Дизеринг") {
     var quantizationGreen = 2
 
 
-
-
-    fun orderedDithering(image: PlumImage, matrixSize: Int, numColors: Int): PlumImage {
+    private fun orderedDithering(image: PlumImage, matrixSize: Int): PlumImage {
         val width = image.width
         val height = image.height
         val outputImage = PlumImage(width, height)
-        val matrix = generateThresholdMap(matrixSize)
-        val step = 255 / (numColors - 1)
+        val matrixRed = generateThresholdMap(matrixSize)
+        val matrixBlue = generateThresholdMap(matrixSize)
+        val matrixGreen = generateThresholdMap(matrixSize)
         for (x in 0 until width) {
             for (y in 0 until height) {
-                val color = Color(image.getRGB(x, y))
-                val red = quantize(color.red, numColors, step)
-                val green = quantize(color.green, numColors, step)
-                val blue = quantize(color.blue, numColors, step)
-                val gray = (0.2126 * red + 0.7152 * green + 0.0722 * blue).toInt()
-                val threshold = matrix[x % matrixSize][y % matrixSize]
-                if (gray > threshold) {
-                    outputImage.setRGB(x, y, Color.WHITE.rgb)
-                } else {
-                    outputImage.setRGB(x, y, Color.BLACK.rgb)
-                }
+                val (red, green, blue) = image.getPixel(x, y)
+
+                val newRed = getOrderedColor(red, matrixRed, x, y, quantizationRed)
+                val newGreen = getOrderedColor(green, matrixBlue, x, y, quantizationBlue)
+                val newBlue = getOrderedColor(blue, matrixGreen, x, y, quantizationGreen)
+
+                outputImage.setRGB(x, y, getIntRGB(newRed, newGreen, newBlue))
             }
         }
         return outputImage
     }
 
-    fun quantize(value: Int, numLevels: Int, step: Int): Int {
-        return ((value / step) * step) + step / 2
+    private fun getOrderedColor(value: Int, matrix: Array<IntArray>, x: Int, y: Int, spread: Int): Int {
+        val rv = 256 / (spread - 1)
+        val matrixDim = matrix.size
+        val threshold = (rv * (matrix[x % matrixDim][y % matrixDim].toDouble() / (matrixDim * matrixDim) - 0.5)).toInt()
+        return colorStep(value + threshold, rv)
     }
 
+    private fun colorStep(value: Int, stepSize: Int): Int {
+        return normalizeColor(((value.toDouble() / stepSize).roundToInt() * stepSize))
+    }
 
-    fun generateThresholdMap(size: Int): Array<IntArray> {
+    private fun generateThresholdMap(size: Int): Array<IntArray> {
         val map = Array(size) { IntArray(size) }
         if (size == 1) {
             map[0][0] = 0
@@ -71,19 +74,7 @@ object DitheringFilter : Filter("Дизеринг") {
         return map
     }
 
-    private fun generateDitherMatrix(matrixSize: Int): Array<IntArray> {
-        val matrix = Array(matrixSize) { IntArray(matrixSize) }
-        val levels = matrixSize * matrixSize
-        for (i in 0 until matrixSize) {
-            for (j in 0 until matrixSize) {
-                matrix[i][j] = (255 * ((i * matrixSize + j) % levels) / (levels - 1))
-            }
-        }
-        return matrix
-    }
-
-
-    private fun ditheringFloydSteinberg(image: PlumImage):PlumImage {
+    private fun ditheringFloydSteinberg(image: PlumImage): PlumImage {
         val imageToProcess = image.copy()
         val width = imageToProcess.width
         val height = imageToProcess.height
@@ -113,10 +104,10 @@ object DitheringFilter : Filter("Дизеринг") {
         val colorStepR = 255 / quantizationRed
         val colorStepG = 255 / quantizationGreen
         val colorStepB = 255 / quantizationBlue
-        val newColor: Color = Color(
-            (oldPixel.red / colorStepR) * colorStepR, // round red component
-            (oldPixel.green / colorStepG) * colorStepG, // round green component
-            (oldPixel.blue / colorStepB) * colorStepB // round blue component
+        val newColor = Color(
+            (oldPixel.red / colorStepR) * colorStepR,
+            (oldPixel.green / colorStepG) * colorStepG,
+            (oldPixel.blue / colorStepB) * colorStepB
         )
         image.setRGB(i, j, newColor.rgb)
     }
@@ -157,7 +148,7 @@ object DitheringFilter : Filter("Дизеринг") {
     override fun permit(image: PlumImage): PlumImage {
         return when (dithering) {
             Dithering.FLOYD_STEINBERG -> ditheringFloydSteinberg(image)
-            Dithering.ORDERED -> orderedDithering(image, quantizationBlue, quantizationRed)
+            Dithering.ORDERED -> orderedDithering(image, quantizationBlue)
         }
     }
 }

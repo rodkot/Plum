@@ -60,6 +60,10 @@ fun  Triple<Int,Int,Int>.getIntRGB():Int{
     return (this.first shl 16) or (this.second shl 8) or this.third
 }
 
+fun  getIntRGB(red:Int,green:Int,blue:Int):Int{
+    return (red shl 16) or (green shl 8) or blue
+}
+
 /**
  * Функция добавляет симметричную границу
  *
