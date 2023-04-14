@@ -23,56 +23,68 @@ object DitheringFilter : Filter("Дизеринг") {
     var quantizationGreen = 2
 
 
-    private fun orderedDithering(
-        inputImage: PlumImage,
-        ditheringMatrix: Array<IntArray>,
-        quantizationLevels: Int
-    ): PlumImage {
-        val width = inputImage.width
-        val height = inputImage.height
+
+
+    fun orderedDithering(image: PlumImage, matrixSize: Int, numColors: Int): PlumImage {
+        val width = image.width
+        val height = image.height
         val outputImage = PlumImage(width, height)
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                // Get the color of the input pixel
-                val inputPixel = inputImage.getRGB(x, y)
-                val inputRed = inputPixel shr 16 and 0xff
-                val inputGreen = inputPixel shr 8 and 0xff
-                val inputBlue = inputPixel and 0xff
-
-                // Calculate the dithering thresholds for each color channel
-                val thresholdRed: Int =
-                    ditheringMatrix[x % ditheringMatrix.size][y % ditheringMatrix.size] * (256 / quantizationLevels)
-                val thresholdGreen: Int =
-                    ditheringMatrix[(x + 1) % ditheringMatrix.size][(y + 1) % ditheringMatrix.size] * (256 / quantizationLevels)
-                val thresholdBlue: Int =
-                    ditheringMatrix[(x + 2) % ditheringMatrix.size][(y + 2) % ditheringMatrix.size] * (256 / quantizationLevels)
-
-                // Set the output pixel value based on the dithering thresholds for each color channel
-                val outputRed = if (inputRed < thresholdRed) 0 else 255
-                val outputGreen = if (inputGreen < thresholdGreen) 0 else 255
-                val outputBlue = if (inputBlue < thresholdBlue) 0 else 255
-                outputImage.setRGB(x, y, Color(outputRed, outputGreen, outputBlue).rgb)
+        val matrix = generateThresholdMap(matrixSize)
+        val step = 255 / (numColors - 1)
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                val color = Color(image.getRGB(x, y))
+                val red = quantize(color.red, numColors, step)
+                val green = quantize(color.green, numColors, step)
+                val blue = quantize(color.blue, numColors, step)
+                val gray = (0.2126 * red + 0.7152 * green + 0.0722 * blue).toInt()
+                val threshold = matrix[x % matrixSize][y % matrixSize]
+                if (gray > threshold) {
+                    outputImage.setRGB(x, y, Color.WHITE.rgb)
+                } else {
+                    outputImage.setRGB(x, y, Color.BLACK.rgb)
+                }
             }
         }
         return outputImage
     }
 
-    private fun generateDitheringMatrix(size: Int): Array<IntArray> {
-        val matrix = Array(size) { IntArray(size) }
-        val threshold = 255 / (size * size - 1)
+    fun quantize(value: Int, numLevels: Int, step: Int): Int {
+        return ((value / step) * step) + step / 2
+    }
 
-        for (y in 0 until size) {
-            for (x in 0 until size) {
-                val value = (y * size + x) * threshold
-                matrix[x][y] = value
+
+    fun generateThresholdMap(size: Int): Array<IntArray> {
+        val map = Array(size) { IntArray(size) }
+        if (size == 1) {
+            map[0][0] = 0
+        } else {
+            val subMap = generateThresholdMap(size / 2)
+            for (i in 0 until size) {
+                for (j in 0 until size) {
+                    val x = i % (size / 2)
+                    val y = j % (size / 2)
+                    map[i][j] = 4 * subMap[x][y] + (i / (size / 2)) * 2 + (j / (size / 2))
+                }
             }
         }
+        return map
+    }
 
+    private fun generateDitherMatrix(matrixSize: Int): Array<IntArray> {
+        val matrix = Array(matrixSize) { IntArray(matrixSize) }
+        val levels = matrixSize * matrixSize
+        for (i in 0 until matrixSize) {
+            for (j in 0 until matrixSize) {
+                matrix[i][j] = (255 * ((i * matrixSize + j) % levels) / (levels - 1))
+            }
+        }
         return matrix
     }
 
 
-    private fun ditheringFloydSteinberg(imageToProcess: PlumImage) {
+    private fun ditheringFloydSteinberg(image: PlumImage):PlumImage {
+        val imageToProcess = image.copy()
         val width = imageToProcess.width
         val height = imageToProcess.height
         var oldPixel: Color
@@ -83,6 +95,7 @@ object DitheringFilter : Filter("Дизеринг") {
                 spreadErrors(imageToProcess, oldPixel, j, i)
             }
         }
+        return imageToProcess
     }
 
     private fun spreadErrors(image: PlumImage, oldPixel: Color, i: Int, j: Int) {
@@ -143,12 +156,9 @@ object DitheringFilter : Filter("Дизеринг") {
     }
 
     override fun permit(image: PlumImage): PlumImage {
-        val newImage = image.copy()
-        when (dithering) {
-            Dithering.FLOYD_STEINBERG -> ditheringFloydSteinberg(newImage)
-            Dithering.ORDERED -> return orderedDithering(newImage, generateDitheringMatrix(16), quantizationRed)
+        return when (dithering) {
+            Dithering.FLOYD_STEINBERG -> ditheringFloydSteinberg(image)
+            Dithering.ORDERED -> orderedDithering(image, quantizationBlue, quantizationRed)
         }
-
-        return newImage
     }
 }
