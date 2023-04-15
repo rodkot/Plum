@@ -25,20 +25,20 @@ object DitheringFilter : Filter("Дизеринг") {
     var quantizationGreen = 2
 
 
-    private fun orderedDithering(image: PlumImage, matrixSize: Int): PlumImage {
+    private fun orderedDithering(image: PlumImage): PlumImage {
         val width = image.width
         val height = image.height
         val outputImage = PlumImage(width, height)
-        val matrixRed = generateThresholdMap(matrixSize)
-        val matrixBlue = generateThresholdMap(matrixSize)
-        val matrixGreen = generateThresholdMap(matrixSize)
+        val matrixRed = generateThresholdMap(if (quantizationRed % 2 == 0) quantizationRed else quantizationRed + 1)
+        val matrixBlue = generateThresholdMap(if (quantizationBlue % 2 == 0) quantizationBlue else quantizationBlue + 1)
+        val matrixGreen = generateThresholdMap(if (quantizationGreen % 2 == 0) quantizationGreen else quantizationGreen + 1)
         for (x in 0 until width) {
             for (y in 0 until height) {
                 val (red, green, blue) = image.getPixel(x, y)
 
                 val newRed = getOrderedColor(red, matrixRed, x, y, quantizationRed)
-                val newGreen = getOrderedColor(green, matrixBlue, x, y, quantizationBlue)
-                val newBlue = getOrderedColor(blue, matrixGreen, x, y, quantizationGreen)
+                val newGreen = getOrderedColor(green, matrixGreen, x, y, quantizationGreen)
+                val newBlue = getOrderedColor(blue, matrixBlue, x, y, quantizationBlue)
 
                 outputImage.setRGB(x, y, getIntRGB(newRed, newGreen, newBlue))
             }
@@ -148,7 +148,7 @@ object DitheringFilter : Filter("Дизеринг") {
     override fun permit(image: PlumImage): PlumImage {
         return when (dithering) {
             Dithering.FLOYD_STEINBERG -> ditheringFloydSteinberg(image)
-            Dithering.ORDERED -> orderedDithering(image, quantizationBlue)
+            Dithering.ORDERED -> orderedDithering(image)
         }
     }
 }
