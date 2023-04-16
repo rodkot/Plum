@@ -4,7 +4,7 @@ import ru.nsu.ccfit.plum.component.Param
 import ru.nsu.ccfit.plum.component.PlumImage
 import kotlin.math.abs
 
-object DitheringFilter : Filter("Дизеринг, алгоритм Флойда Стейнберга") {
+object DitheringFilter : Filter("Дизеринг") {
     var redQuantizationNum = 2
     var greenQuantizationNum = 2
     var blueQuantizationNum = 2
