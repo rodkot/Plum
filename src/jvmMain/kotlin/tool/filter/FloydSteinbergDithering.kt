@@ -79,7 +79,7 @@ object FloydSteinbergDithering : Filter("Дизеринг, алгоритм Фл
         return palette[pos]
     }
 
-    fun right(newImage: PlumImage, x: Int, y: Int) {
+    private fun right(newImage: PlumImage, x: Int, y: Int) {
         newImage.setRGB(
             x + 1,
             y,
@@ -87,7 +87,7 @@ object FloydSteinbergDithering : Filter("Дизеринг, алгоритм Фл
         )
     }
 
-    fun leftDown(newImage: PlumImage, x: Int, y: Int) {
+    private fun leftDown(newImage: PlumImage, x: Int, y: Int) {
         newImage.setRGB(
             x - 1,
             y + 1,
@@ -95,7 +95,7 @@ object FloydSteinbergDithering : Filter("Дизеринг, алгоритм Фл
         )
     }
 
-    fun down(newImage: PlumImage, x: Int, y: Int)  {
+    private fun down(newImage: PlumImage, x: Int, y: Int)  {
         newImage.setRGB(
             x,
             y + 1,
@@ -103,7 +103,7 @@ object FloydSteinbergDithering : Filter("Дизеринг, алгоритм Фл
         )
     }
 
-    fun downRight(newImage: PlumImage, x: Int, y: Int) {
+    private fun downRight(newImage: PlumImage, x: Int, y: Int) {
         newImage.setRGB(
             x + 1,
             y + 1,
@@ -131,7 +131,7 @@ object FloydSteinbergDithering : Filter("Дизеринг, алгоритм Фл
     }
 
     override fun permit(image: PlumImage): PlumImage {
-        val newImage = PlumImage(image.width, image.height)
+        val newImage = image.copy()
 
         createPalette()
 
