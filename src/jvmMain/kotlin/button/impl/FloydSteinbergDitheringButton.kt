@@ -1,8 +1,0 @@
-package ru.nsu.ccfit.plum.button.impl
-
-import ru.nsu.ccfit.plum.button.FilterButton
-import ru.nsu.ccfit.plum.icon.impl.ImageIcon
-import ru.nsu.ccfit.plum.tool.filter.FloydSteinbergDithering
-
-class FloydSteinbergDitheringButton(checked: Boolean, onClick: () -> Unit ):
-    FilterButton(FloydSteinbergDithering, checked, ImageIcon("tool/dithering_logo.png"), onClick)

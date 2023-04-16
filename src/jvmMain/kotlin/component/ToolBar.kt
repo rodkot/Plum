@@ -53,8 +53,8 @@ class ToolBar(
                                 currentFilter.value = MirrorFilter
                             }.render()
 
-                            FloydSteinbergDitheringButton(currentFilter.value is FloydSteinbergDithering) {
-                                currentFilter.value = FloydSteinbergDithering
+                            DitheringButton(currentFilter.value is DitheringFilter) {
+                                currentFilter.value = DitheringFilter
                             }.render()
                         }
                     }
