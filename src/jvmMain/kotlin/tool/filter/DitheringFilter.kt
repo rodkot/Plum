@@ -8,7 +8,7 @@ object DitheringFilter : Filter("Дизеринг, алгоритм Флойда
     var redQuantizationNum = 2
     var greenQuantizationNum = 2
     var blueQuantizationNum = 2
-    var algorithm = Algorithm.FLOYD
+    var algorithm = Algorithm.FLOYD_STEINBERG
 
     var rPalette = IntArray(redQuantizationNum)
     var gPalette = IntArray(greenQuantizationNum)
@@ -60,17 +60,17 @@ object DitheringFilter : Filter("Дизеринг, алгоритм Флойда
 
     override fun permit(image: PlumImage) = when (algorithm) {
         Algorithm.ORDERED -> OrderedDithering.permit(image)
-        Algorithm.FLOYD -> FloydSteinbergDithering.permit(image)
+        Algorithm.FLOYD_STEINBERG -> FloydSteinbergDithering.permit(image)
     }
 
     enum class Algorithm : Param {
-        FLOYD,
+        FLOYD_STEINBERG,
         ORDERED;
 
         override fun getName() = toString()
 
         override fun toString() = when (this) {
-            FLOYD -> "Флойд-Стейнберг"
+            FLOYD_STEINBERG -> "Флойд-Стейнберг"
             ORDERED -> "Упорядоченный"
         }
     }
