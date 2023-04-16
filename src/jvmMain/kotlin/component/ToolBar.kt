@@ -44,9 +44,6 @@ class ToolBar(
                             GrayScaleButton(currentFilter.value is GrayScaleFilter) {
                                 currentFilter.value = GrayScaleFilter
                             }.render()
-                            DitheringButton(currentFilter.value is DitheringFilter) {
-                                currentFilter.value = DitheringFilter
-                            }.render()
 
                             RotateButton(currentFilter.value is RotateFilter) {
                                 currentFilter.value = RotateFilter
@@ -54,6 +51,10 @@ class ToolBar(
 
                             MirrorButton(currentFilter.value is MirrorFilter) {
                                 currentFilter.value = MirrorFilter
+                            }.render()
+
+                            FloydSteinbergDitheringButton(currentFilter.value is FloydSteinbergDithering) {
+                                currentFilter.value = FloydSteinbergDithering
                             }.render()
                         }
                     }
