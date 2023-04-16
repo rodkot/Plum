@@ -18,8 +18,6 @@ object FloydSteinbergDithering {
         (this.blue() + errB * param / 16).toInt()
     )
 
-    private fun com(neighbourColorComponent: Int) = max(min(neighbourColorComponent, 0xFF), 0)
-
     private fun getColor(
         neighbourR: Int,
         neighbourG: Int,
