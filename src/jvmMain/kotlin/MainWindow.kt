@@ -31,7 +31,7 @@ class MainWindow : Renderable {
 
     private var size = mutableStateOf(IntSize(100, 100))
     private var originalImage =
-        ImageIO.read(Thread.currentThread().contextClassLoader.getResource("test-image.png")).toPlumImage()
+        ImageIO.read(Thread.currentThread().contextClassLoader.getResource("test-image.jpg")).toPlumImage()
     private var currentImage = originalImage
 
     private val toolBar = ToolBar(currentFilter, interpolationMode)
