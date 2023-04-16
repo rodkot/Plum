@@ -21,13 +21,34 @@ object RotateFilter : Filter("Фильтр поворота") {
         val cos = Math.cos(radians)
         val sin = Math.sin(radians)
         val height = (original.width * cos).toInt()
-        val newImg = PlumImage(original.width, original.height)
+        val newImg = PlumImage(
+            with(
+                listOf(
+                    cos * original.width,
+                    cos * original.width - sin * original.height,
+                    -sin * original.height,
+                    0.0
+                )
+            ) {
+                max().toInt() - min().toInt()
+            },
+            with(
+                listOf(
+                    sin * original.width,
+                    sin * original.width + cos * original.height,
+                    cos * original.height,
+                    0.0
+                )
+            ) {
+                max().toInt() - min().toInt()
+            }
+        )
 
 
-        for (x in 0 until original.width)
-            for (y in 0 until original.height) {
-                val newX = ((x - original.width / 2)* cos - (y - original.height / 2) * sin).toInt() + original.width / 2
-                val newY = ((x - original.width / 2) * sin + (y - original.height / 2) * cos).toInt() + original.height / 2
+        for (x in 0 until newImg.width)
+            for (y in 0 until newImg.height) {
+                val newX = ((y - newImg.height / 2)* sin + (x - newImg.width / 2) * cos).toInt() + newImg.width / 2 - (newImg.width - original.width).absoluteValue / 2
+                val newY = ((y - newImg.height / 2)* cos - (x - newImg.width / 2) * sin).toInt() + newImg.height / 2 - (newImg.height - original.height).absoluteValue / 2
 
                 val color = if ( newX > 0
                     && newY > 0
