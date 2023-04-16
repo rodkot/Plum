@@ -1,8 +1,9 @@
 package ru.nsu.ccfit.plum.tool.filter
 
 import ru.nsu.ccfit.plum.component.PlumImage
-import java.awt.Point
 import kotlin.math.absoluteValue
+import kotlin.math.cos
+import kotlin.math.sin
 
 
 object RotateFilter : Filter("Фильтр поворота") {
@@ -11,16 +12,15 @@ object RotateFilter : Filter("Фильтр поворота") {
      */
     var angle: Int = 45
 
-    private var minX = 0
-    private var maxX = 0
-    private var minY = 0
-    private var maxY = 0
-
     private fun rotateImage(original: PlumImage): PlumImage {
         val radians = Math.toRadians(angle.toDouble())
-        val cos = Math.cos(radians)
-        val sin = Math.sin(radians)
-        val height = (original.width * cos).toInt()
+        val cos = cos(radians)
+        val sin = sin(radians)
+
+        /**
+         * We know previous picture angeles, so getting their new
+         * coordinates allow us to know limits of new image
+         */
         val newImg = PlumImage(
             with(
                 listOf(
@@ -47,13 +47,30 @@ object RotateFilter : Filter("Фильтр поворота") {
 
         for (x in 0 until newImg.width)
             for (y in 0 until newImg.height) {
-                val newX = ((y - newImg.height / 2)* sin + (x - newImg.width / 2) * cos).toInt() + newImg.width / 2 - (newImg.width - original.width).absoluteValue / 2
-                val newY = ((y - newImg.height / 2)* cos - (x - newImg.width / 2) * sin).toInt() + newImg.height / 2 - (newImg.height - original.height).absoluteValue / 2
+                /**
+                 * Move picture to its center
+                 */
+                val yCenter = y - newImg.height / 2
+                val xCenter = x - newImg.width / 2
 
-                val color = if ( newX > 0
+                /**
+                 * Getting x and y dimension of angle that out of the frame
+                 */
+                val xOutAngle = (newImg.width - original.width).absoluteValue / 2
+                val yOutAngle = (newImg.height - original.height).absoluteValue / 2
+
+                /**
+                 * Calculation of color coordinate
+                 */
+                val newX = (yCenter * sin + xCenter * cos).toInt() + newImg.width / 2 - xOutAngle
+                val newY = (yCenter * cos - xCenter * sin).toInt() + newImg.height / 2 - yOutAngle
+
+                val color = if (
+                    newX > 0
                     && newY > 0
                     && newX < original.width
-                    && newY < original.height) original.getRGB(
+                    && newY < original.height
+                ) original.getRGB(
                     newX,
                     newY
                 ) else -1
@@ -69,7 +86,7 @@ object RotateFilter : Filter("Фильтр поворота") {
     }
 
     /**
-     * Матрица поворота
+     * Rotation matrix
      * /cos A -sin A \
      * \sin A  cos A /
      */
