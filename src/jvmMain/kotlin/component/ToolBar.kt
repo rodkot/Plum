@@ -3,15 +3,13 @@ package ru.nsu.ccfit.plum.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.*
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import ru.nsu.ccfit.plum.button.impl.*
 import ru.nsu.ccfit.plum.tool.filter.*
-import ru.nsu.ccfit.plum.button.impl.GrayScaleButton
-import ru.nsu.ccfit.plum.button.impl.SmoothingButton
 
 class ToolBar(
     private val currentFilter: MutableState<Filter>,
@@ -44,9 +42,6 @@ class ToolBar(
                             GrayScaleButton(currentFilter.value is GrayScaleFilter) {
                                 currentFilter.value = GrayScaleFilter
                             }.render()
-                            DitheringButton(currentFilter.value is DitheringFilter) {
-                                currentFilter.value = DitheringFilter
-                            }.render()
 
                             RotateButton(currentFilter.value is RotateFilter) {
                                 currentFilter.value = RotateFilter
@@ -54,6 +49,18 @@ class ToolBar(
 
                             MirrorButton(currentFilter.value is MirrorFilter) {
                                 currentFilter.value = MirrorFilter
+                            }.render()
+
+                            DitheringButton(currentFilter.value is DitheringFilter) {
+                                currentFilter.value = DitheringFilter
+                            }.render()
+
+                            AquarellButton(currentFilter.value is AquarellFilter) {
+                                currentFilter.value = AquarellFilter
+                            }.render()
+
+                            GammaButton(currentFilter.value is GammaFilter) {
+                                currentFilter.value = GammaFilter
                             }.render()
                         }
                     }
