@@ -55,8 +55,12 @@ class ToolBar(
                                 currentFilter.value = DitheringFilter
                             }.render()
 
-                            AquarellFilterButton(currentFilter.value is AquarellFilter) {
+                            AquarellButton(currentFilter.value is AquarellFilter) {
                                 currentFilter.value = AquarellFilter
+                            }.render()
+
+                            GammaButton(currentFilter.value is GammaFilter) {
+                                currentFilter.value = GammaFilter
                             }.render()
                         }
                     }

@@ -1,6 +1,7 @@
 package ru.nsu.ccfit.plum.tool.filter
 
 import ru.nsu.ccfit.plum.component.PlumImage
+import ru.nsu.ccfit.plum.draw.getImageFilter
 import ru.nsu.ccfit.plum.tool.filter.DitheringFilter as DF
 
 object OrderedDithering {
@@ -85,19 +86,15 @@ object OrderedDithering {
         val stepG = 256.0 / DF.gPalette.size
         val stepB = 256.0 / DF.bPalette.size
 
-        for (x in 0 until image.width) {
-            for (y in 0 until image.height) {
-                val color = image.getRGB(x, y)
-                val thresholdElem = thresholdMap[y % matrixSize][x % matrixSize]
+        newImage.getImageFilter { x, y ->
+            val color = image.getRGB(x, y)
+            val thresholdElem = thresholdMap[y % matrixSize][x % matrixSize]
 
-                val res = getNewColor(
-                    DF.findColorInPalette(DF.rPalette, (color.red() + stepR * thresholdElem).toInt()),
-                    DF.findColorInPalette(DF.gPalette, (color.green() + stepG * thresholdElem).toInt()),
-                    DF.findColorInPalette(DF.bPalette, (color.blue() + stepB * thresholdElem).toInt())
-                )
-
-                newImage.setRGB(x, y, res)
-            }
+            getNewColor(
+                DF.findColorInPalette(DF.rPalette, (color.red() + stepR * thresholdElem).toInt()),
+                DF.findColorInPalette(DF.gPalette, (color.green() + stepG * thresholdElem).toInt()),
+                DF.findColorInPalette(DF.bPalette, (color.blue() + stepB * thresholdElem).toInt())
+            )
         }
 
         return newImage

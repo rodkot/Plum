@@ -1,6 +1,7 @@
 package ru.nsu.ccfit.plum.tool.filter
 
 import ru.nsu.ccfit.plum.component.PlumImage
+import ru.nsu.ccfit.plum.draw.getImageFilter
 import java.util.*
 
 object AquarellFilter : Filter("Акварелизация") {
@@ -79,35 +80,23 @@ object AquarellFilter : Filter("Акварелизация") {
         }
     }
 
-    private fun PlumImage.setNewColor(x: Int, y: Int) {
-        this.setRGB(
-            x,
-            y,
+    override fun permit(image: PlumImage): PlumImage {
+        val newImage = image.copy()
+
+        newImage.getImageFilter { x, y ->
+            median(newImage, x, y)
+        }
+
+        val newImage1 = newImage.copy()
+
+        newImage1.getImageFilter { x, y ->
+            resColorInit()
+            newImage.sharpness(x, y)
             getNewColor(
                 com(resR),
                 com(resG),
                 com(resB)
             )
-        )
-    }
-
-    override fun permit(image: PlumImage): PlumImage {
-        val newImage = image.copy()
-
-        for (x in 0 until image.width) {
-            for (y in 0 until image.height) {
-                newImage.setRGB(x, y, median(newImage, x, y))
-            }
-        }
-
-        val newImage1 = newImage.copy()
-
-        for (x in 0 until image.width) {
-            for (y in 0 until image.height) {
-                resColorInit()
-                newImage.sharpness(x, y)
-                newImage1.setNewColor(x, y)
-            }
         }
 
         return newImage1
