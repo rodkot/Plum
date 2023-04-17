@@ -1,6 +1,7 @@
 package ru.nsu.ccfit.plum
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.onDrag
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -11,6 +12,8 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import ru.nsu.ccfit.plum.component.*
 import ru.nsu.ccfit.plum.dialog.impl.AboutDialog
 import ru.nsu.ccfit.plum.dialog.impl.FileOpenDialog
@@ -22,6 +25,8 @@ import java.io.File
 import java.io.IOException
 import javax.imageio.ImageIO
 import javax.swing.UIManager
+import kotlin.math.max
+import kotlin.math.min
 
 class MainWindow : Renderable {
 
@@ -36,8 +41,15 @@ class MainWindow : Renderable {
 
     private val toolBar = ToolBar(currentFilter, interpolationMode)
     private val canvas = PaintCanvas()
+    private var xStart = 0
+    private var yStart = 0
+    private var horizontalStart = 0
+    private var verticalStart = 0
+    private var xFinish = 0
+    private var yFinish = 0
 
 
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun render() {
         Column(
@@ -61,15 +73,29 @@ class MainWindow : Renderable {
                 val stateVertical = rememberScrollState(0)
                 val stateHorizontal = rememberScrollState(0)
 
+
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(13.dp)
                         .verticalScroll(stateVertical)
                         .horizontalScroll(stateHorizontal)
+                        .onDrag(
+                            onDragStart = {
+                                verticalStart = stateVertical.value
+                                horizontalStart = stateHorizontal.value
+                            },
+                            onDrag = {
+                                horizontalStart -= it.x.toInt()
+                                verticalStart -= it.y.toInt()
 
+                                runBlocking {
+                                    stateVertical.scrollTo(verticalStart)
+                                    stateHorizontal.scrollTo(horizontalStart)
+                                }
+                            }
+                        )
                 ) {
-
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
                     //TODO: Кастыль для работы применения фильтра при изменении его параметров
