@@ -25,6 +25,16 @@ class PlumImage(startWidth: Int, startHeight: Int) :
         val b = rgb and 0xFF
         return Triple(r,g,b)
     }
+
+    fun isIn(
+    x: Int,
+    y: Int,
+    i: Int = 0,
+    j: Int = 0
+    ) = x + i > 0
+    && y + j > 0
+    && x + i < this.width
+    && y + j < this.height
 }
 
 fun BufferedImage.toPlumImage(): PlumImage {

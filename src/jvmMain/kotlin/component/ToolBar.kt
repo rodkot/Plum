@@ -62,6 +62,14 @@ class ToolBar(
                             GammaButton(currentFilter.value is GammaFilter) {
                                 currentFilter.value = GammaFilter
                             }.render()
+
+                            ValenciaButton(currentFilter.value is ValenciaFilter) {
+                                currentFilter.value = ValenciaFilter
+                            }.render()
+
+                            SharpnessButton(currentFilter.value is SharpnessFilter) {
+                                currentFilter.value = SharpnessFilter
+                            }.render()
                         }
                     }
                 }
