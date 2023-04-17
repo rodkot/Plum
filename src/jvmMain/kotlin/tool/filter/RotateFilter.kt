@@ -1,7 +1,9 @@
 package ru.nsu.ccfit.plum.tool.filter
 
 import ru.nsu.ccfit.plum.component.PlumImage
-import java.awt.Point
+import kotlin.math.absoluteValue
+import kotlin.math.cos
+import kotlin.math.sin
 
 
 object RotateFilter : Filter("Фильтр поворота") {
@@ -10,72 +12,81 @@ object RotateFilter : Filter("Фильтр поворота") {
      */
     var angle: Int = 45
 
-    private var minX = 0
-    private var maxX = 0
-    private var minY = 0
-    private var maxY = 0
-
-    private fun getRotatedPixelMap(
-        original: PlumImage,
-        height: Int,
-        width: Int,
-        cos: Double,
-        sin: Double
-    ) = Array(height * width) { i ->
-            val x = i % width
-            val y = i / width
-
-            val newX = (x * cos - y * sin).toInt()
-            val newY = (x * sin + y * cos).toInt()
-
-            if (i == 0) {
-                maxX = newX
-                minX = newX
-                maxY = newY
-                minY = newY
-            } else {
-                if (newX > maxX) {
-                    maxX = newX
-                } else if (newX < minX) {
-                    minX = newX
-                }
-
-                if (newY < minY) {
-                    minY = newY
-                } else if (newY > maxY) {
-                    maxY = newY
-                }
-            }
-
-            Pair(
-                Point(
-                    newX,
-                    newY
-                ),
-                original.getRGB(x, y)
-            )
-        }
-
     private fun rotateImage(original: PlumImage): PlumImage {
         val radians = Math.toRadians(angle.toDouble())
-        val cos = Math.cos(radians)
-        val sin = Math.sin(radians)
-        val pixelMap = getRotatedPixelMap(original, original.height, original.width, cos, sin)
-        val newImage = PlumImage(maxX - minX + 1, maxY - minY + 1)
+        val cos = cos(radians)
+        val sin = sin(radians)
 
-        pixelMap.forEach {pixel ->
-            try {
-                newImage.setRGB(pixel.first.x - minX, pixel.first.y - minY, pixel.second)
-            } catch (e: ArrayIndexOutOfBoundsException) {
-                println("Out of bounds in rotation filter: point is ${pixel.first.x - minX}, ${pixel.first.y - minY}, when limits are ${newImage.width}, ${newImage.height}")
+        /**
+         * We know previous picture angeles, so getting their new
+         * coordinates allow us to know limits of new image
+         */
+        val newImg = PlumImage(
+            with(
+                listOf(
+                    cos * original.width,
+                    cos * original.width - sin * original.height,
+                    -sin * original.height,
+                    0.0
+                )
+            ) {
+                max().toInt() - min().toInt()
+            },
+            with(
+                listOf(
+                    sin * original.width,
+                    sin * original.width + cos * original.height,
+                    cos * original.height,
+                    0.0
+                )
+            ) {
+                max().toInt() - min().toInt()
             }
-        }
+        )
 
-        return newImage
+
+        for (x in 0 until newImg.width)
+            for (y in 0 until newImg.height) {
+                /**
+                 * Move picture to its center
+                 */
+                val yCenter = y - newImg.height / 2
+                val xCenter = x - newImg.width / 2
+
+                /**
+                 * Getting x and y dimension of angle that out of the frame
+                 */
+                val xOutAngle = (newImg.width - original.width).absoluteValue / 2
+                val yOutAngle = (newImg.height - original.height).absoluteValue / 2
+
+                /**
+                 * Calculation of color coordinate
+                 */
+                val newX = (yCenter * sin + xCenter * cos).toInt() + newImg.width / 2 - xOutAngle
+                val newY = (yCenter * cos - xCenter * sin).toInt() + newImg.height / 2 - yOutAngle
+
+                val color = if (
+                    newX > 0
+                    && newY > 0
+                    && newX < original.width
+                    && newY < original.height
+                ) original.getRGB(
+                    newX,
+                    newY
+                ) else -1
+
+                newImg.setRGB(
+                    x,
+                    y,
+                    color
+                )
+            }
+
+        return newImg
     }
 
     /**
-     * Матрица поворота
+     * Rotation matrix
      * /cos A -sin A \
      * \sin A  cos A /
      */
