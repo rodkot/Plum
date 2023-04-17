@@ -1,13 +1,16 @@
 package ru.nsu.ccfit.plum.component
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.HorizontalScrollbar
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import ru.nsu.ccfit.plum.button.impl.*
 import ru.nsu.ccfit.plum.tool.filter.*
 
@@ -23,7 +26,9 @@ class ToolBar(
         }, modifier = Modifier.fillMaxWidth(),
             actions = {
                 Row(Modifier.weight(5f)) {
-                    Column(Modifier.fillMaxWidth()) {
+                    Box(Modifier.fillMaxWidth()){
+                        val stateHorizontal = rememberScrollState(0)
+                    Column(Modifier.fillMaxWidth().horizontalScroll(stateHorizontal).padding(bottom = 3.dp)) {
                         Row(Modifier.align(Alignment.CenterHorizontally)) {
                             // TODO По добавлению фильтра
                             // Добавить схожую конструкцию
@@ -72,6 +77,14 @@ class ToolBar(
                             }.render()
                         }
                     }
+                        HorizontalScrollbar(
+                            modifier = Modifier.align(Alignment.BottomStart)
+                                .fillMaxWidth(),
+                            style = defaultScrollbarStyle(),
+                            adapter = rememberScrollbarAdapter(stateHorizontal)
+                        )
+                    }
+
                 }
 
                 Row(Modifier.weight(1f)) {
