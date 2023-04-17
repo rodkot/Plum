@@ -66,6 +66,10 @@ class ToolBar(
                             ValenciaButton(currentFilter.value is ValenciaFilter) {
                                 currentFilter.value = ValenciaFilter
                             }.render()
+
+                            SharpnessButton(currentFilter.value is SharpnessFilter) {
+                                currentFilter.value = SharpnessFilter
+                            }.render()
                         }
                     }
                 }
