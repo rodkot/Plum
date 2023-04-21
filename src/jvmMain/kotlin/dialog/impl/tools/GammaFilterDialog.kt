@@ -7,10 +7,10 @@ import ru.nsu.ccfit.plum.dialog.ToolDialog
 import ru.nsu.ccfit.plum.tool.filter.GammaFilter
 
 class GammaFilterDialog : ToolDialog(GammaFilter) {
-    private val gamma = mutableStateOf(GammaFilter.gamma)
+    private val gamma = mutableStateOf(GammaFilter.gamma.toFloat())
 
     override fun updateFilter() {
-        GammaFilter.gamma = gamma.value
+        GammaFilter.gamma = gamma.value.toDouble()
     }
 
     @Composable
