@@ -60,9 +60,6 @@ class ToolBar(
                                 currentFilter.value = MirrorFilter
                             }.render()
 
-                            DitheringButton(currentFilter.value is DitheringFilter) {
-                                currentFilter.value = DitheringFilter
-                            }.render()
 
                             AquarellButton(currentFilter.value is AquarellFilter) {
                                 currentFilter.value = AquarellFilter

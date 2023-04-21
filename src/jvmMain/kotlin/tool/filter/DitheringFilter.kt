@@ -5,6 +5,7 @@ import ru.nsu.ccfit.plum.component.PlumImage
 import ru.nsu.ccfit.plum.draw.getIntRGB
 import java.awt.Color
 import java.awt.image.BufferedImage
+import kotlin.math.ln
 import kotlin.math.roundToInt
 
 
@@ -29,9 +30,12 @@ object DitheringFilter : Filter("Дизеринг") {
         val width = image.width
         val height = image.height
         val outputImage = PlumImage(width, height)
-        val matrixRed = generateThresholdMap(if (quantizationRed % 2 == 0) quantizationRed else quantizationRed + 1)
-        val matrixBlue = generateThresholdMap(if (quantizationBlue % 2 == 0) quantizationBlue else quantizationBlue + 1)
-        val matrixGreen = generateThresholdMap(if (quantizationGreen % 2 == 0) quantizationGreen else quantizationGreen + 1)
+        val smallerDimension = if (width < height) width else height
+        val k = (ln(smallerDimension.toDouble()) / ln(2.0)).toInt()
+        val size = 1 shl k
+        val matrixRed = generateThresholdMap(size)
+        val matrixBlue = generateThresholdMap(size)
+        val matrixGreen = generateThresholdMap(size)
         for (x in 0 until width) {
             for (y in 0 until height) {
                 val (red, green, blue) = image.getPixel(x, y)
@@ -58,6 +62,7 @@ object DitheringFilter : Filter("Дизеринг") {
     }
 
     private fun generateThresholdMap(size: Int): Array<IntArray> {
+
         val map = Array(size) { IntArray(size) }
         if (size == 1) {
             map[0][0] = 0
@@ -73,6 +78,46 @@ object DitheringFilter : Filter("Дизеринг") {
         }
         return map
     }
+
+//    private fun generateThresholdMap(k: Int): Array<IntArray> {
+//        val size = 1 shl k
+//        val matrix = Array(size) { IntArray(size) }
+//
+//        for (i in 0 until size step 2) {
+//            for (j in 0 until size step 2) {
+//                matrix[i][j] = 0
+//                matrix[i][j+1] = 2
+//                matrix[i+1][j] = 3
+//                matrix[i+1][j+1] = 1
+//            }
+//        }
+//
+//        val maxIndex = k - 1
+//        for (s in 2..size step 2) {
+//            val half = s / 2
+//            for (i in 0 until size step s) {
+//                for (j in 0 until size step s) {
+//                    val i1 = i + half - 1
+//                    val j1 = j + half - 1
+//                    matrix[i1][j1] = (matrix[i][j] + matrix[i+s-1][j] +
+//                            matrix[i][j+s-1] + matrix[i+s-1][j+s-1]) / 4
+//                    matrix[i1-half][j1] = (matrix[i][j] + matrix[i][j+s-1]) / 2
+//                    matrix[i1][j1-half] = (matrix[i][j] + matrix[i+s-1][j]) / 2
+//                    matrix[i1+half][j1] = (matrix[i+s-1][j] + matrix[i+s-1][j+s-1]) / 2
+//                    matrix[i1][j1+half] = (matrix[i][j+s-1] + matrix[i+s-1][j+s-1]) / 2
+//                }
+//            }
+//        }
+//
+//        for (i in 0 until size) {
+//            for (j in 0 until size) {
+//                matrix[i][j] = (matrix[i][j] * 255) / maxIndex
+//            }
+//        }
+//
+//        return matrix
+//    }
+
 
     private fun ditheringFloydSteinberg(image: PlumImage): PlumImage {
         val imageToProcess = image.copy()
