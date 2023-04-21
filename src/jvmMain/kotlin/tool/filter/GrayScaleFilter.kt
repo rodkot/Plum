@@ -21,7 +21,7 @@ object GrayScaleFilter : Filter("Черно-белый фильтр") {
         return  (wR * red + wG * green + wB * blue).toInt()
     }
 
-    private fun getGrayColor(image: PlumImage, x: Int, y: Int): Int {
+    fun getGrayColor(image: PlumImage, x: Int, y: Int): Int {
         val grayValue: Int =
            getGrayValue(image.getRGB(x, y))
         return (grayValue shl 16) or (grayValue shl 8) or grayValue

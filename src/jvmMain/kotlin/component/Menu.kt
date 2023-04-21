@@ -43,7 +43,11 @@ object Menu {
                 createFilterMenuItem(GrayScaleFilter)
                 createFilterMenuItem(SmoothingFilter)
                 createFilterMenuItem(RotateFilter)
+                createFilterMenuItem(AquarellFilter)
                 createFilterMenuItem(DitheringFilter)
+                createFilterMenuItem(GammaFilter)
+                createFilterMenuItem(ValenciaFilter)
+                createFilterMenuItem(SharpnessFilter)
                 createFilterMenuItem(BleachBypassFilter)
             }
             Menu("Инструменты", mnemonic = 'I') {
