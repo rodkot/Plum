@@ -15,7 +15,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.godaddy.android.colorpicker.ClassicColorPicker
 import com.godaddy.android.colorpicker.HsvColor
-import ru.nsu.ccfit.plum.tool.filter.RotateFilter
 
 /**
  * Слайдер для выбора натурального значения
