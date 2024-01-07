@@ -19,7 +19,7 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "Plum",
-        icon = painterResource("plum-logo.png"),
+        icon = painterResource("drawable/launcher_icons/linux.png"),
         state = WindowState(
             position = WindowPosition.Aligned(Alignment.Center),
             width = SizeWindows.width().dp,

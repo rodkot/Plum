@@ -7,6 +7,6 @@ import ru.nsu.ccfit.plum.tool.filter.SharpnessFilter
 class SharpnessButton(checked: Boolean, onClick: () -> Unit): FilterButton(
     SharpnessFilter,
     checked,
-    ImageIcon("tool/sharpness.png"),
+    ImageIcon("drawable/tool/sharpness.png"),
     onClick
 )

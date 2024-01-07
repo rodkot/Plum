@@ -6,4 +6,4 @@ import ru.nsu.ccfit.plum.icon.impl.ImageIcon
 import ru.nsu.ccfit.plum.tool.filter.GammaFilter
 
 class GammaButton(checked: Boolean, onClick: () -> Unit) :
-    FilterSettingButton(GammaFilter, GammaFilterDialog(), checked, ImageIcon("tool/gamma.png"), onClick)
+    FilterSettingButton(GammaFilter, GammaFilterDialog(), checked, ImageIcon("drawable/tool/gamma.png"), onClick)

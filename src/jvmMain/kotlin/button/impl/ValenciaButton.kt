@@ -5,4 +5,4 @@ import ru.nsu.ccfit.plum.icon.impl.ImageIcon
 import ru.nsu.ccfit.plum.tool.filter.ValenciaFilter
 
 class ValenciaButton(checked: Boolean, onClick: () -> Unit) :
-        FilterButton(ValenciaFilter, checked, ImageIcon("tool/valencia.png"), onClick)
+        FilterButton(ValenciaFilter, checked, ImageIcon("drawable/tool/valencia.png"), onClick)

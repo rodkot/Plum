@@ -6,4 +6,4 @@ import ru.nsu.ccfit.plum.icon.impl.ImageIcon
 import ru.nsu.ccfit.plum.tool.filter.MirrorFilter
 
 class MirrorButton(checked: Boolean, onClick: () -> Unit) :
-    FilterSettingButton(MirrorFilter, MirrorFilterDialog(), checked, ImageIcon("tool/mirror.png"), onClick)
+    FilterSettingButton(MirrorFilter, MirrorFilterDialog(), checked, ImageIcon("drawable/tool/mirror.png"), onClick)

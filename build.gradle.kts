@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "ru.nsu.ccfit"
-version = "1.0-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
     google()
@@ -41,9 +41,18 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Plum"
-            packageVersion = "1.0.0"
+            packageVersion = project.version as String
+            copyright = "© 2023 Rodion Kotov. All rights reserved."
+            vendor = "rodkot"
+            appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+
+            windows {
+                upgradeUuid = "31575EDF-D0D5-4CEF-A4D2-7562083D6D88"
+                menuGroup = packageName
+                perUserInstall = true
+            }
         }
     }
 }

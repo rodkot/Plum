@@ -10,6 +10,6 @@ class DitheringButton(checked: Boolean, onClick: () -> Unit) :
         DitheringFilter,
         DitheringFilterDialog(),
         checked,
-        ImageIcon("tool/dithering_logo.png"),
+        ImageIcon("drawable/tool/dithering_logo.png"),
         onClick
     )
